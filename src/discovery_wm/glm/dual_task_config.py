@@ -343,17 +343,17 @@ dual_tasks_regressor_config = {
         "omission": {
             "amplitude_column": "omission",
             "duration_column": "constant_1_column",
-            "subset": "trial_type != 'n/a'",
+            "subset": "trial_type != 'tn/a_cn/a'",
         },
         "commission": {
             "amplitude_column": "commission",
             "duration_column": "constant_1_column",
-            "subset": "trial_type != 'n/a'",
+            "subset": "trial_type != 'tn/a_cn/a'",
         },
         "rt_fast": {
             "amplitude_column": "rt_fast",
             "duration_column": "constant_1_column",
-            "subset": "trial_type != 'n/a'",
+            "subset": "trial_type != 'tn/a_cn/a'",
         },
         "cuedtstaycstay_spatialtstaycstay": {
             "amplitude_column": "constant_1_column",
@@ -609,7 +609,7 @@ dual_tasks_regressor_config = {
             "amplitude_column": "constant_1_column",
             "duration_column": "constant_1_column",
             "subset": (
-                "trial_type == 'ccswitch_tswitch_congruent' and "
+                "trial_type == 'cswitch_tswitch_congruent' and "
                 "key_press == correct_response and response_time >= 0.2"
             ),
         },
@@ -650,17 +650,17 @@ dual_tasks_regressor_config = {
         "omission": {
             "amplitude_column": "omission",
             "duration_column": "constant_1_column",
-            "subset": "trial_type != 'n/a'",
+            "subset": "trial_type != 'tn/a_cn/a'",
         },
         "commission": {
             "amplitude_column": "commission",
             "duration_column": "constant_1_column",
-            "subset": "trial_type != 'n/a'",
+            "subset": "trial_type != 'tn/a_cn/a'",
         },
         "rt_fast": {
             "amplitude_column": "rt_fast",
             "duration_column": "constant_1_column",
-            "subset": "trial_type != 'n/a'",
+            "subset": "trial_type != 'tn/a_cn/a'",
         },
         "tstay_cstay_SSS": {
             "amplitude_column": "constant_1_column",
@@ -964,23 +964,23 @@ dual_tasks_regressor_config = {
         "omission": {
             "amplitude_column": "omission",
             "duration_column": "constant_1_column",
-            "subset": "trial_type != 'n/a'",
+            "subset": "trial_type != 'tn/a_cn/a'",
         },
         "commission": {
             "amplitude_column": "commission",
             "duration_column": "constant_1_column",
-            "subset": "trial_type != 'n/a'",
+            "subset": "trial_type != 'tn/a_cn/a'",
         },
         "rt_fast": {
             "amplitude_column": "rt_fast",
             "duration_column": "constant_1_column",
-            "subset": "trial_type != 'n/a'",
+            "subset": "trial_type != 'tn/a_cn/a'",
         },
         "match_tstay_cstay_1back": {
             "amplitude_column": "constant_1_column",
             "duration_column": "constant_1_column",
             "subset": (
-                "trial_type == 'match_tstay_cstay' and delay == 1 and "
+                "trial_type == 'match_tstay_cstay' and task == '1-back' and "
                 "key_press == correct_response and response_time >= 0.2"
             ),
         },
@@ -988,7 +988,7 @@ dual_tasks_regressor_config = {
             "amplitude_column": "constant_1_column",
             "duration_column": "constant_1_column",
             "subset": (
-                "trial_type == 'match_tstay_cswitch' and delay == 1 and "
+                "trial_type == 'match_tstay_cswitch' and task == '1-back' and "
                 "key_press == correct_response and response_time >= 0.2"
             ),
         },
@@ -996,7 +996,7 @@ dual_tasks_regressor_config = {
             "amplitude_column": "constant_1_column",
             "duration_column": "constant_1_column",
             "subset": (
-                "trial_type == 'match_tswitch_cswitch' and delay == 1 and "
+                "trial_type == 'match_tswitch_cswitch' and task == '1-back' and "
                 "key_press == correct_response and response_time >= 0.2"
             ),
         },
@@ -1004,7 +1004,7 @@ dual_tasks_regressor_config = {
             "amplitude_column": "constant_1_column",
             "duration_column": "constant_1_column",
             "subset": (
-                "trial_type == 'mismatch_tstay_cstay' and delay == 1 and "
+                "trial_type == 'mismatch_tstay_cstay' and task == '1-back' and "
                 "key_press == correct_response and response_time >= 0.2"
             ),
         },
@@ -1012,7 +1012,7 @@ dual_tasks_regressor_config = {
             "amplitude_column": "constant_1_column",
             "duration_column": "constant_1_column",
             "subset": (
-                "trial_type == 'mismatch_tstay_cswitch' and delay == 1 and "
+                "trial_type == 'mismatch_tstay_cswitch' and task == '1-back' and "
                 "key_press == correct_response and response_time >= 0.2"
             ),
         },
@@ -1020,7 +1020,7 @@ dual_tasks_regressor_config = {
             "amplitude_column": "constant_1_column",
             "duration_column": "constant_1_column",
             "subset": (
-                "trial_type == 'mismatch_tswitch_cswitch' and delay == 1 and "
+                "trial_type == 'mismatch_tswitch_cswitch' and task == '1-back' and "
                 "key_press == correct_response and response_time >= 0.2"
             ),
         },
@@ -1028,7 +1028,7 @@ dual_tasks_regressor_config = {
             "amplitude_column": "constant_1_column",
             "duration_column": "constant_1_column",
             "subset": (
-                "trial_type == 'match_tstay_cstay' and delay == 2 and "
+                "trial_type == 'match_tstay_cstay' and task == '2-back' and "
                 "key_press == correct_response and response_time >= 0.2"
             ),
         },
@@ -1036,7 +1036,7 @@ dual_tasks_regressor_config = {
             "amplitude_column": "constant_1_column",
             "duration_column": "constant_1_column",
             "subset": (
-                "trial_type == 'match_tstay_cswitch' and delay == 2 and "
+                "trial_type == 'match_tstay_cswitch' and task == '2-back' and "
                 "key_press == correct_response and response_time >= 0.2"
             ),
         },
@@ -1044,7 +1044,7 @@ dual_tasks_regressor_config = {
             "amplitude_column": "constant_1_column",
             "duration_column": "constant_1_column",
             "subset": (
-                "trial_type == 'match_tswitch_cswitch' and delay == 2 and "
+                "trial_type == 'match_tswitch_cswitch' and task == '2-back' and "
                 "key_press == correct_response and response_time >= 0.2"
             ),
         },
@@ -1052,7 +1052,7 @@ dual_tasks_regressor_config = {
             "amplitude_column": "constant_1_column",
             "duration_column": "constant_1_column",
             "subset": (
-                "trial_type == 'mismatch_tstay_cstay' and delay == 2 and "
+                "trial_type == 'mismatch_tstay_cstay' and task == '2-back' and "
                 "key_press == correct_response and response_time >= 0.2"
             ),
         },
@@ -1060,7 +1060,7 @@ dual_tasks_regressor_config = {
             "amplitude_column": "constant_1_column",
             "duration_column": "constant_1_column",
             "subset": (
-                "trial_type == 'mismatch_tstay_cswitch' and delay == 2 and "
+                "trial_type == 'mismatch_tstay_cswitch' and task == '2-back' and "
                 "key_press == correct_response and response_time >= 0.2"
             ),
         },
@@ -1068,7 +1068,7 @@ dual_tasks_regressor_config = {
             "amplitude_column": "constant_1_column",
             "duration_column": "constant_1_column",
             "subset": (
-                "trial_type == 'mismatch_tswitch_cswitch' and delay == 2 and "
+                "trial_type == 'mismatch_tswitch_cswitch' and task == '2-back' and "
                 "key_press == correct_response and response_time >= 0.2"
             ),
         },
@@ -1299,23 +1299,23 @@ dual_tasks_config = {
         "neg_tstay_cstay-con_tstay_cstay": "neg_tstay_cstay-con_tstay_cstay",
         
         # Cue switch cost across all DF conditions
-        "(neg_tstay_cswitch+pos_tstay_cswitch+con_tstay_cswitch)-(neg_tstay_cstay+pos_tstay_cstay+con_tstay_cstay)":
+        "directedForgettingWCuedTS_directedForgetting_cue_switch_cost":
             "1/3*(neg_tstay_cswitch+pos_tstay_cswitch+con_tstay_cswitch)-1/3*(neg_tstay_cstay+pos_tstay_cstay+con_tstay_cstay)",
         
         # Task switch cost across all DF conditions
-        "(neg_tswitch_cswitch+pos_tswitch_cswitch+con_tswitch_cswitch)-(neg_tstay_cswitch+pos_tstay_cswitch+con_tstay_cswitch)":
+        "directedForgettingWCuedTS_directedForgetting_task_switch_cost":
             "1/3*(neg_tswitch_cswitch+pos_tswitch_cswitch+con_tswitch_cswitch)-1/3*(neg_tstay_cswitch+pos_tstay_cswitch+con_tstay_cswitch)",
         
         # DirectedForgetting contrast across all cuedTS conditions
-        "(neg_tstay_cstay+neg_tstay_cswitch+neg_tswitch_cswitch)-(con_tstay_cstay+con_tstay_cswitch+con_tswitch_cswitch)":
+        "directedForgettingWCuedTS_directedForgetting_contrast_across_cuedTS":
             "1/3*(neg_tstay_cstay+neg_tstay_cswitch+neg_tswitch_cswitch)-1/3*(con_tstay_cstay+con_tstay_cswitch+con_tswitch_cswitch)",
         
         # Cue switch cost interaction
-        "(neg_tstay_cswitch-con_tstay_cswitch)-(neg_tstay_cstay-con_tstay_cstay)":
+        "directedForgettingWCuedTS_cue_switch_cost_interaction":
             "1/2*(neg_tstay_cswitch-con_tstay_cswitch)-1/2*(neg_tstay_cstay-con_tstay_cstay)",
         
         # Task switch cost interaction
-        "(neg_tswitch_cswitch-con_tswitch_cswitch)-(neg_tstay_cswitch-con_tstay_cswitch)":
+        "directedForgettingWCuedTS_task_switch_cost_interaction":
             "1/2*(neg_tswitch_cswitch-con_tswitch_cswitch)-1/2*(neg_tstay_cswitch-con_tstay_cswitch)",
         
         # Task - baseline
@@ -1338,7 +1338,7 @@ dual_tasks_config = {
         "incongruent_con-congruent_con": "incongruent_con-congruent_con",
         
         # Interaction contrast
-        "(incongruent_neg-incongruent_con)-(congruent_neg-congruent_con)":
+        "directedForgettingWFlanker_interaction":
             "1/2*(incongruent_neg+congruent_con)-1/2*(incongruent_con+congruent_neg)",
 
         # Task - baseline
@@ -1425,63 +1425,57 @@ dual_tasks_config = {
         "cuedtswitchcswitch_spatialtswitchcswitch": "cuedtswitchcswitch_spatialtswitchcswitch",
 
         #cue switch cost for cuedTS 
-        "cuedtstaycswitch_spatialtstaycstay-cuedtstaycstay_spatialtstaycstay": (
+        "spatialTSWCuedTS_cuedTS_cue_switch_cost": (
             "cuedtstaycswitch_spatialtstaycstay-cuedtstaycstay_spatialtstaycstay"
             ),
 
         #task switch cost for cuedTS
-        "cuedtswitchcswitch_spatialtstaycstay-cuedtstaycswitch_spatialtstaycstay": (
+        "spatialTSWCuedTS_cuedTS_task_switch_cost": (
             "cuedtswitchcswitch_spatialtstaycstay-cuedtstaycswitch_spatialtstaycstay"
             ),
 
         #cue switch cost for spatialTS
-        "cuedtstaycstay_spatialtstaycswitch-cuedtstaycstay_spatialtstaycstay": (
+        "spatialTSWCuedTS_spatialTS_cue_switch_cost": (
             "cuedtstaycstay_spatialtstaycswitch-cuedtstaycstay_spatialtstaycstay"
             ),
 
         #task switch cost for spatialTS
-        "cuedtstaycstay_spatialtswitchcswitch-cuedtstaycstay_spatialtstaycswitch": (
+        "spatialTSWCuedTS_spatialTS_task_switch_cost": (
             "cuedtstaycstay_spatialtswitchcswitch-cuedtstaycstay_spatialtstaycswitch"
             ),
 
         #cue switch cost for cuedTS averaged across other trials
-        "(cuedtstaycswitch_spatialtstaycstay+cuedtstaycswitch_spatialtstaycswitch+cuedtstaycswitch_spatialtswitchcswitch)-"
-        "(cuedtstaycstay_spatialtstaycstay+cuedtstaycstay_spatialtstaycswitch+cuedtstaycstay_spatialtswitchcswitch)": (
+        "spatialTSWCuedTS_cuedTS_cue_switch_cost": (
             "1/3*(cuedtstaycswitch_spatialtstaycstay+cuedtstaycswitch_spatialtstaycswitch+cuedtstaycswitch_spatialtswitchcswitch)"
             "-1/3*(cuedtstaycstay_spatialtstaycstay+cuedtstaycstay_spatialtstaycswitch+cuedtstaycstay_spatialtswitchcswitch)"
             ),
 
         #task switch cost for cuedTS averaged across other trials
-        "(cuedtswitchcswitch_spatialtstaycstay+cuedtswitchcswitch_spatialtstaycswitch+cuedtswitchcswitch_spatialtswitchcswitch)-"
-        "(cuedtstaycswitch_spatialtstaycstay+cuedtstaycswitch_spatialtstaycswitch+cuedtstaycswitch_spatialtswitchcswitch)": (
+        "spatialTSWCuedTS_cuedTS_task_switch_cost": (
             "1/3*(cuedtswitchcswitch_spatialtstaycstay+cuedtswitchcswitch_spatialtstaycswitch+cuedtswitchcswitch_spatialtswitchcswitch)-"
             "1/3*(cuedtstaycswitch_spatialtstaycstay+cuedtstaycswitch_spatialtstaycswitch+cuedtstaycswitch_spatialtswitchcswitch)"
             ),
 
         #cue switch cost for spatialTS averaged across other trials
-        "(cuedtstaycstay_spatialtstaycswitch+cuedtstaycswitch_spatialtstaycswitch+cuedtswitchcswitch_spatialtstaycswitch)-"
-        "(cuedtstaycstay_spatialtstaycstay+cuedtstaycswitch_spatialtstaycstay+cuedtswitchcswitch_spatialtstaycstay)": (
+        "spatialTSWCuedTS_spatialTS_cue_switch_cost": (
             "1/3*(cuedtstaycstay_spatialtstaycswitch+cuedtstaycswitch_spatialtstaycswitch+cuedtswitchcswitch_spatialtstaycswitch)-"
             "1/3*(cuedtstaycstay_spatialtstaycstay+cuedtstaycswitch_spatialtstaycstay+cuedtswitchcswitch_spatialtstaycstay)"
             ),
 
         #task switch cost for spatialTS averaged across other trials
-        "(cuedtstaycstay_spatialtswitchcswitch+cuedtstaycswitch_spatialtswitchcswitch+cuedtswitchcswitch_spatialtswitchcswitch)-"
-        "(cuedtstaycstay_spatialtstaycswitch+cuedtstaycswitch_spatialtstaycswitch+cuedtswitchcswitch_spatialtstaycswitch)": (
+        "spatialTSWCuedTS_spatialTS_task_switch_cost": (
             "1/3*(cuedtstaycstay_spatialtswitchcswitch+cuedtstaycswitch_spatialtswitchcswitch+cuedtswitchcswitch_spatialtswitchcswitch)-"
             "1/3*(cuedtstaycstay_spatialtstaycswitch+cuedtstaycswitch_spatialtstaycswitch+cuedtswitchcswitch_spatialtstaycswitch)"
             ),
 
         #interaction for cue switch cost
-        "(cuedtstaycswitch_spatialtstaycswitch-cuedtstaycstay_spatialtstaycswitch)-"
-        "(cuedtstaycswitch_spatialtstaycstay-cuedtstaycstay_spatialtstaycstay)": (
+        "spatialTSWCuedTS_cuedTS_cue_switch_cost_interaction": (
             "1/2*(cuedtstaycswitch_spatialtstaycswitch-cuedtstaycstay_spatialtstaycswitch)"
             "-1/2*(cuedtstaycswitch_spatialtstaycstay-cuedtstaycstay_spatialtstaycstay)"
             ),
 
         #interaction for task switch cost
-        "(cuedtswitchcswitch_spatialtswitchcswitch-cuedtstaycswitch_spatialtswitchcswitch)-"
-        "(cuedtswitchcswitch_spatialtstaycswitch-cuedtstaycswitch_spatialtstaycswitch)":(
+        "spatialTSWCuedTS_task_switch_cost_interaction": (
             "1/2*(cuedtswitchcswitch_spatialtswitchcswitch-cuedtstaycswitch_spatialtswitchcswitch)-"
             "1/2*(cuedtswitchcswitch_spatialtstaycswitch-cuedtstaycswitch_spatialtstaycswitch)"
             ),
@@ -1514,32 +1508,29 @@ dual_tasks_config = {
         "incongruent_DDS": "incongruent_DDS",
 
         #incongruent-congruent while shapeMatching is "off"
-        "(incongruent_SNN+incongruent_DNN)-(congruent_SNN+congruent_DNN)": (
+        "flankerWShapeMatching_shapeMatching_off_incongruent_minus_congruent": (
             "1/2*(incongruent_SNN+incongruent_DNN)-1/2*(congruent_SNN+congruent_DNN)"
             ),
 
         #main vars while flanker is "off"
-        "(congruent_SDD+congruent_DDD+congruent_DDS)-(congruent_SNN+congruent_DNN)": (
+        "flankerWShapeMatching_flanker_off_main_vars": (
             "1/3*(congruent_SDD+congruent_DDD+congruent_DDS)-1/2*(congruent_SNN+congruent_DNN)"
             ),
 
         #incongruent-congruent across all other trial types in shapeMatching
-        "(incongruent_SSS+incongruent_SDD+incongruent_SNN+incongruent_DSD+incongruent_DNN+incongruent_DDD+incongruent_DDS)-"
-        "(congruent_SSS+congruent_SDD+congruent_SNN+congruent_DSD+congruent_DNN+congruent_DDD+congruent_DDS)": (
+        "flankerWShapeMatching_shapeMatching_incongruent_minus_congruent": (
             "1/7*(incongruent_SSS+incongruent_SDD+incongruent_SNN+incongruent_DSD+incongruent_DNN+incongruent_DDD+incongruent_DDS)"
             "-1/7*(congruent_SSS+congruent_SDD+congruent_SNN+congruent_DSD+congruent_DNN+congruent_DDD+congruent_DDS)"
             ),
 
         #main vars across all other flanker trial types
-        "(congruent_SDD+congruent_DDD+congruent_DDS+incongruent_SDD+incongruent_DDD+incongruent_DDS)-"
-        "(congruent_SNN+congruent_DNN+incongruent_SNN+incongruent_DNN)": (
+        "flankerWShapeMatching_flanker_main_vars": (
             "1/6*(congruent_SDD+congruent_DDD+congruent_DDS+incongruent_SDD+incongruent_DDD+incongruent_DDS)-"
             "1/4*(congruent_SNN+congruent_DNN+incongruent_SNN+incongruent_DNN)"
             ),
 
         #interaction for each trial type
-        "((incongruent_SDD+incongruent_DDD+incongruent_DDS)-(congruent_SDD+congruent_DDD+congruent_DDS))-"
-        "((incongruent_SNN+incongruent_DNN)-(congruent_SNN+congruent_DNN))": (
+        "flankerWShapeMatching_interaction": (
             "(1/3*(incongruent_SDD+incongruent_DDD+incongruent_DDS)-1/3*(congruent_SDD+congruent_DDD+congruent_DDS))-"
             "(1/2*(incongruent_SNN+incongruent_DNN)-1/2*(congruent_SNN+congruent_DNN))"
             ),
@@ -1572,29 +1563,28 @@ dual_tasks_config = {
         "cswitch_tswitch_congruent-cswitch_tstay_congruent": "cswitch_tswitch_congruent-cswitch_tstay_congruent",
 
         #incongruent-congruent across all cuedTS trial types
-        "(cstay_tstay_incongruent+cswitch_tswitch_incongruent+cswitch_tstay_incongruent)-"
-        "(cstay_tstay_congruent+cswitch_tswitch_congruent+cswitch_tstay_congruent)": (
+        "cuedTSWFlanker_cuedTS_incongruent_minus_congruent": (
             "1/3*(cstay_tstay_incongruent+cswitch_tswitch_incongruent+cswitch_tstay_incongruent)-"
             "1/3*(cstay_tstay_congruent+cswitch_tswitch_congruent+cswitch_tstay_congruent)"
             ),
 
         #cue switch cost across all flanker trial types
-        "(cswitch_tstay_congruent+cswitch_tstay_incongruent)-(cstay_tstay_congruent+cstay_tstay_incongruent)": (
+        "cuedTSWFlanker_across_flanker_cue_switch_cost": (
             "1/2*(cswitch_tstay_congruent+cswitch_tstay_incongruent)-1/2*(cstay_tstay_congruent+cstay_tstay_incongruent)"
             ),
 
         #task switch cost across all flanker trial types
-        "(cswitch_tswitch_congruent+cswitch_tswitch_incongruent)-(cswitch_tstay_congruent+cswitch_tstay_incongruent)": (
+        "cuedTSWFlanker_across_flanker_task_switch_cost": (
             "1/2*(cswitch_tswitch_congruent+cswitch_tswitch_incongruent)-1/2*(cswitch_tstay_congruent+cswitch_tstay_incongruent)"
             ),
 
         #interaction for cue switch cost
-        "(cswitch_tstay_incongruent-cstay_tstay_incongruent)-(cswitch_tstay_congruent-cstay_tstay_congruent)": (
+        "cuedTSWFlanker_cue_switch_cost_interaction": (
             "1/2*(cswitch_tstay_incongruent-cstay_tstay_incongruent)-1/2*(cswitch_tstay_congruent-cstay_tstay_congruent)"
             ),
 
         #interaction for task switch cost
-        "(cswitch_tswitch_incongruent-cswitch_tstay_incongruent)-(cswitch_tswitch_congruent-cswitch_tstay_congruent)": (
+        "cuedTSWFlanker_task_switch_cost_interaction": (
             "1/2*(cswitch_tswitch_incongruent-cswitch_tstay_incongruent)-1/2*(cswitch_tswitch_congruent-cswitch_tstay_congruent)"
             ),
 
@@ -1631,32 +1621,28 @@ dual_tasks_config = {
         "tswitch_cswitch_DDS": "tswitch_cswitch_DDS",
 
         #spatialTS cue switch cost while shapeMatching is "off"
-        "(tstay_cswitch_SNN+tstay_cswitch_DNN)-(tstay_cstay_SNN+tstay_cstay_DNN)": (
+        "spatialTSWShapeMatching_shapeMatching_off_cue_switch_cost": (
             "1/2*(tstay_cswitch_SNN+tstay_cswitch_DNN)-1/2*(tstay_cstay_SNN+tstay_cstay_DNN)"
             ),
 
         #spatialTS task switch cost while shapeMatching is "off"
-        "(tswitch_cswitch_SNN+tswitch_cswitch_DNN)-(tstay_cswitch_SNN+tstay_cswitch_DNN)": (
+        "spatialTSWShapeMatching_shapeMatching_off_task_switch_cost": (
             "1/2*(tswitch_cswitch_SNN+tswitch_cswitch_DNN)-1/2*(tstay_cswitch_SNN+tstay_cswitch_DNN)"
             ),
 
         #main vars while spatialTS is "off"
-        "(tstay_cstay_SDD+tstay_cstay_DDD+tstay_cstay_DDS)-(tstay_cstay_SNN+tstay_cstay_DNN)": (
+        "spatialTSWShapeMatching_spatialTS_off_main_vars": (
             "1/3*(tstay_cstay_SDD+tstay_cstay_DDD+tstay_cstay_DDS)-1/2*(tstay_cstay_SNN+tstay_cstay_DNN)"
             ),
 
         #spatialTS cue switch cost across all other shapeMatching trial types
-        "(tstay_cswitch_SSS+tstay_cswitch_SDD+tstay_cswitch_SNN+tstay_cswitch_DSD+tstay_cswitch_DNN+tstay_cswitch_DDD+tstay_cswitch_DDS)-"
-        "(tstay_cstay_SSS+tstay_cstay_SDD+tstay_cstay_SNN+tstay_cstay_DSD+tstay_cstay_DNN+tstay_cstay_DDD+tstay_cstay_DDS)": (
+        "spatialTSWShapeMatching_shapeMatching_cue_switch_cost": (
             "1/7*(tstay_cswitch_SSS+tstay_cswitch_SDD+tstay_cswitch_SNN+tstay_cswitch_DSD+tstay_cswitch_DNN+tstay_cswitch_DDD+tstay_cswitch_DDS)-"
             "1/7*(tstay_cstay_SSS+tstay_cstay_SDD+tstay_cstay_SNN+tstay_cstay_DSD+tstay_cstay_DNN+tstay_cstay_DDD+tstay_cstay_DDS)"
             ),
 
         #spatialTS task switch cost across all other shapeMatching trial types
-        "(tswitch_cswitch_SSS+tswitch_cswitch_SDD+tswitch_cswitch_SNN+"
-        "tswitch_cswitch_DSD+tswitch_cswitch_DNN+tswitch_cswitch_DDD+tswitch_cswitch_DDS)-"
-        "(tstay_cswitch_SSS+tstay_cswitch_SDD+tstay_cswitch_SNN+tstay_cswitch_DSD+"
-        "tstay_cswitch_DNN+tstay_cswitch_DDD+tstay_cswitch_DDS)": (
+        "spatialTSWShapeMatching_shapeMatching_task_switch_cost": (
             "1/7*(tswitch_cswitch_SSS+tswitch_cswitch_SDD+tswitch_cswitch_SNN+tswitch_cswitch_DSD+"
             "tswitch_cswitch_DNN+tswitch_cswitch_DDD+tswitch_cswitch_DDS)-"
             "1/7*(tstay_cswitch_SSS+tstay_cswitch_SDD+tstay_cswitch_SNN+tstay_cswitch_DSD+"
@@ -1664,17 +1650,14 @@ dual_tasks_config = {
             ),
 
         #main vars across all other spatialTS trial types
-        "(tstay_cstay_SDD+tstay_cstay_DDD+tstay_cstay_DDS+tstay_cswitch_SDD+tstay_cswitch_DDD+"
-        "tstay_cswitch_DDS+tswitch_cswitch_SDD+tswitch_cswitch_DDD+tswitch_cswitch_DDS)-"
-        "(tstay_cstay_SNN+tstay_cstay_DNN+tstay_cswitch_SNN+tstay_cswitch_DNN+tswitch_cswitch_SNN+tswitch_cswitch_DNN)": (
+        "spatialTSWShapeMatching_spatialTS_main_vars": (
             "1/9*(tstay_cstay_SDD+tstay_cstay_DDD+tstay_cstay_DDS+tstay_cswitch_SDD+"
             "tstay_cswitch_DDD+tstay_cswitch_DDS+tswitch_cswitch_SDD+tswitch_cswitch_DDD+tswitch_cswitch_DDS)-"
             "1/6*(tstay_cstay_SNN+tstay_cstay_DNN+tstay_cswitch_SNN+tstay_cswitch_DNN+tswitch_cswitch_SNN+tswitch_cswitch_DNN)"
             ),
 
         #interaction for cue switch cost
-        "((tstay_cswitch_SDD+tstay_cswitch_DDD+tstay_cswitch_DDS)-(tstay_cstay_SDD+tstay_cstay_DDD+tstay_cstay_DDS))-"
-        "((tstay_cswitch_SNN+tstay_cswitch_DNN)-(tstay_cstay_SNN+tstay_cstay_DNN))": (
+        "spatialTSWShapeMatching_shapeMatching_cue_switch_cost_interaction": (
             "1/3*(tstay_cswitch_SDD+tstay_cswitch_DDD+tstay_cswitch_DDS)-"
             "1/3*(tstay_cstay_SDD+tstay_cstay_DDD+tstay_cstay_DDS)-"
             "1/2*(tstay_cswitch_SNN+tstay_cswitch_DNN)"
@@ -1682,10 +1665,7 @@ dual_tasks_config = {
             ),
 
         #interaction for task switch cost
-        "((tswitch_cswitch_SDD+tswitch_cswitch_DDD+tswitch_cswitch_DDS)-"
-        "(tstay_cswitch_SDD+tstay_cswitch_DDD+tstay_cswitch_DDS))-"
-        "((tswitch_cswitch_SNN+tswitch_cswitch_DNN)-"
-        "(tstay_cswitch_SNN+tstay_cswitch_DNN))": (
+        "spatialTSWShapeMatching_shapeMatching_task_switch_cost_interaction": (
             "1/3*(tswitch_cswitch_SDD+tswitch_cswitch_DDD+tswitch_cswitch_DDS)-"
             "1/3*(tstay_cswitch_SDD+tstay_cswitch_DDD+tstay_cswitch_DDS)-"
             "1/2*(tswitch_cswitch_SNN+tswitch_cswitch_DNN)+"
@@ -1718,22 +1698,19 @@ dual_tasks_config = {
         "match_tswitch_cswitch_2back": "match_tswitch_cswitch_2back",
 
         #2back-1back when spatialTS is "off"
-        "(match_tstay_cstay_2back+mismatch_tstay_cstay_2back)-(match_tstay_cstay_1back+mismatch_tstay_cstay_1back)":
+        "nBackWSpatialTS_spatialTS_off_2back_minus_1back":
         "1/2*(match_tstay_cstay_2back+mismatch_tstay_cstay_2back)-1/2*(match_tstay_cstay_1back+mismatch_tstay_cstay_1back)",
 
         #cue switch cost when nBack is "off"
-        "(match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back)-(match_tstay_cstay_1back+mismatch_tstay_cstay_1back)":
+        "nBackWSpatialTS_nBack_off_cue_switch_cost":
         "1/2*(match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back)-1/2*(match_tstay_cstay_1back+mismatch_tstay_cstay_1back)",
 
         #task switch cost when nBack is "off"
-        "(match_tswitch_cswitch_1back+mismatch_tswitch_cswitch_1back)-(match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back)":
+        "nBackWSpatialTS_nBack_off_task_switch_cost":
         "1/2*(match_tswitch_cswitch_1back+mismatch_tswitch_cswitch_1back)-1/2*(match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back)",
 
         #2back-1back across all spatialTS trial types
-        "(match_tstay_cstay_2back+match_tstay_cswitch_2back+match_tswitch_cswitch_2back+"
-        "mismatch_tstay_cstay_2back+mismatch_tstay_cswitch_2back+mismatch_tswitch_cswitch_2back)-"
-        "(match_tstay_cstay_1back+match_tstay_cswitch_1back+match_tswitch_cswitch_1back+"
-        "mismatch_tstay_cstay_1back+mismatch_tstay_cswitch_1back+mismatch_tswitch_cswitch_1back)": (
+        "nBackWSpatialTS_spatialTS_2back_minus_1back": (
             "1/6*(match_tstay_cstay_2back+match_tstay_cswitch_2back+match_tswitch_cswitch_2back+"
             "mismatch_tstay_cstay_2back+mismatch_tstay_cswitch_2back+mismatch_tswitch_cswitch_2back)-"
             "1/6*(match_tstay_cstay_1back+match_tstay_cswitch_1back+match_tswitch_cswitch_1back+"
@@ -1741,24 +1718,19 @@ dual_tasks_config = {
             ),
 
         #cue switch cost across all other nBack trial types
-        "(match_tstay_cswitch_1back+match_tstay_cswitch_2back+mismatch_tstay_cswitch_1back+mismatch_tstay_cswitch_2back)-"
-        "(match_tstay_cstay_1back+match_tstay_cstay_2back+mismatch_tstay_cstay_1back+mismatch_tstay_cstay_2back)": (
+        "nBackWSpatialTS_nBack_cue_switch_cost": (
             "1/4*(match_tstay_cswitch_1back+match_tstay_cswitch_2back+mismatch_tstay_cswitch_1back+mismatch_tstay_cswitch_2back)-"
             "1/4*(match_tstay_cstay_1back+match_tstay_cstay_2back+mismatch_tstay_cstay_1back+mismatch_tstay_cstay_2back)"
             ),
 
         #task switch cost across all other nBack trial types
-        "(match_tswitch_cswitch_1back+match_tswitch_cswitch_2back+mismatch_tswitch_cswitch_1back+mismatch_tswitch_cswitch_2back)-"
-        "(match_tstay_cswitch_1back+match_tstay_cswitch_2back+mismatch_tstay_cswitch_1back+mismatch_tstay_cswitch_2back)": (
+        "nBackWSpatialTS_nBack_task_switch_cost": (
             "1/4*(match_tswitch_cswitch_1back+match_tswitch_cswitch_2back+mismatch_tswitch_cswitch_1back+mismatch_tswitch_cswitch_2back)-"
             "1/4*(match_tstay_cswitch_1back+match_tstay_cswitch_2back+mismatch_tstay_cswitch_1back+mismatch_tstay_cswitch_2back)"
             ),
 
         #cue switch cost interaction
-        "((match_tstay_cswitch_2back+mismatch_tstay_cswitch_2back)-"
-        "(match_tstay_cstay_2back+mismatch_tstay_cstay_2back))-"
-        "((match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back)-"
-        "(match_tstay_cstay_1back+mismatch_tstay_cstay_1back))": (
+        "nBackWSpatialTS_nBack_cue_switch_cost_interaction": (
             "(1/2*(match_tstay_cswitch_2back+mismatch_tstay_cswitch_2back)-"
             "1/2*(match_tstay_cstay_2back+mismatch_tstay_cstay_2back))-"
             "(1/2*(match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back)-"
@@ -1766,10 +1738,7 @@ dual_tasks_config = {
             ),
 
         #task switch cost interaction
-        "((match_tswitch_cswitch_2back+mismatch_tswitch_cswitch_2back)-"
-        "(match_tstay_cswitch_2back+mismatch_tstay_cswitch_2back))-"
-        "((match_tswitch_cswitch_1back+mismatch_tswitch_cswitch_1back)-"
-        "(match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back))": (
+        "nBackWSpatialTS_nBack_task_switch_cost_interaction": (
             "(1/2*(match_tswitch_cswitch_2back+mismatch_tswitch_cswitch_2back)-"
             "1/2*(match_tstay_cswitch_2back+mismatch_tstay_cswitch_2back))-"
             "(1/2*(match_tswitch_cswitch_1back+mismatch_tswitch_cswitch_1back)-"
@@ -1802,25 +1771,22 @@ dual_tasks_config = {
         "match_tswitch_cswitch_2back": "match_tswitch_cswitch_2back",
 
         #2back-1back when spatialTS is "off"
-        "(match_tstay_cstay_2back+mismatch_tstay_cstay_2back)-(match_tstay_cstay_1back+mismatch_tstay_cstay_1back)": (
+        "nBackWSpatialTS_spatialTS_off_2back_minus_1back": (
             "1/2*(match_tstay_cstay_2back+mismatch_tstay_cstay_2back)-1/2*(match_tstay_cstay_1back+mismatch_tstay_cstay_1back)"
             ),
 
         #cue switch cost when nBack is "off"
-        "(match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back)-(match_tstay_cstay_1back+mismatch_tstay_cstay_1back)": (
+        "nBackWSpatialTS_nBack_off_cue_switch_cost": (
             "1/2*(match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back)-1/2*(match_tstay_cstay_1back+mismatch_tstay_cstay_1back)"
             ),
 
         #task switch cost when nBack is "off"
-        "(match_tswitch_cswitch_1back+mismatch_tswitch_cswitch_1back)-(match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back)": (
+        "nBackWSpatialTS_nBack_off_task_switch_cost": (
             "1/2*(match_tswitch_cswitch_1back+mismatch_tswitch_cswitch_1back)-1/2*(match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back)"
             ),
 
         #2back-1back across all spatialTS trial types
-        "(match_tstay_cstay_2back+match_tstay_cswitch_2back+match_tswitch_cswitch_2back+mismatch_tstay_cstay_2back+"
-        "mismatch_tstay_cswitch_2back+mismatch_tswitch_cswitch_2back)-"
-        "(match_tstay_cstay_1back+match_tstay_cswitch_1back+match_tswitch_cswitch_1back+mismatch_tstay_cstay_1back+"
-        "mismatch_tstay_cswitch_1back+mismatch_tswitch_cswitch_1back)": (
+        "nBackWSpatialTS_spatialTS_2back_minus_1back": (
             "1/6*(match_tstay_cstay_2back+match_tstay_cswitch_2back+match_tswitch_cswitch_2back+"
             "mismatch_tstay_cstay_2back+mismatch_tstay_cswitch_2back+mismatch_tswitch_cswitch_2back)-"
             "1/6*(match_tstay_cstay_1back+match_tstay_cswitch_1back+match_tswitch_cswitch_1back+"
@@ -1828,25 +1794,19 @@ dual_tasks_config = {
             ),
 
         #cue switch cost across all other nBack trial types
-        "(match_tstay_cswitch_1back+match_tstay_cswitch_2back+mismatch_tstay_cswitch_1back+"
-        "mismatch_tstay_cswitch_2back)-(match_tstay_cstay_1back+match_tstay_cstay_2back+"
-        "mismatch_tstay_cstay_1back+mismatch_tstay_cstay_2back)": (
+        "nBackWSpatialTS_nBack_cue_switch_cost": (
             "1/4*(match_tstay_cswitch_1back+match_tstay_cswitch_2back+mismatch_tstay_cswitch_1back+mismatch_tstay_cswitch_2back)-"
             "1/4*(match_tstay_cstay_1back+match_tstay_cstay_2back+mismatch_tstay_cstay_1back+mismatch_tstay_cstay_2back)"
             ),
 
         #task switch cost across all other nBack trial types
-        "(match_tswitch_cswitch_1back+match_tswitch_cswitch_2back+mismatch_tswitch_cswitch_1back+mismatch_tswitch_cswitch_2back)-"
-        "(match_tstay_cswitch_1back+match_tstay_cswitch_2back+mismatch_tstay_cswitch_1back+mismatch_tstay_cswitch_2back)": (
+        "nBackWSpatialTS_nBack_task_switch_cost": (
             "1/4*(match_tswitch_cswitch_1back+match_tswitch_cswitch_2back+mismatch_tswitch_cswitch_1back+mismatch_tswitch_cswitch_2back)-"
             "1/4*(match_tstay_cswitch_1back+match_tstay_cswitch_2back+mismatch_tstay_cswitch_1back+mismatch_tstay_cswitch_2back)"
             ),
 
         #cue switch cost interaction
-        "((match_tstay_cswitch_2back+mismatch_tstay_cswitch_2back)-"
-        "(match_tstay_cstay_2back+mismatch_tstay_cstay_2back))-"
-        "((match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back)-"
-        "(match_tstay_cstay_1back+mismatch_tstay_cstay_1back))": (
+        "nBackWSpatialTS_cue_switch_cost_interaction": (
             "(1/2*(match_tstay_cswitch_2back+mismatch_tstay_cswitch_2back)-"
             "1/2*(match_tstay_cstay_2back+mismatch_tstay_cstay_2back))-"
             "(1/2*(match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back)-"
@@ -1854,10 +1814,7 @@ dual_tasks_config = {
             ),
 
         #task switch cost interaction
-        "((match_tswitch_cswitch_2back+mismatch_tswitch_cswitch_2back)-"
-        "(match_tstay_cswitch_2back+mismatch_tstay_cswitch_2back))-"
-        "((match_tswitch_cswitch_1back+mismatch_tswitch_cswitch_1back)-"
-        "(match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back))": (
+        "nBackWSpatialTS_nBack_task_switch_cost_interaction": (
             "(1/2*(match_tswitch_cswitch_2back+mismatch_tswitch_cswitch_2back)-"
             "1/2*(match_tstay_cswitch_2back+mismatch_tstay_cswitch_2back))-"
             "(1/2*(match_tswitch_cswitch_1back+mismatch_tswitch_cswitch_1back)-"
@@ -1897,32 +1854,28 @@ dual_tasks_config = {
         "DNN_tstay_cswitch": "DNN_tstay_cswitch",
         "DNN_tstay_cstay": "DNN_tstay_cstay",
          #cuedTS cue switch cost while shapeMatching is "off"
-        "(SNN_tstay_cswitch+DNN_tstay_cswitch)-(SNN_tstay_cstay+DNN_tstay_cstay)": (
+        "shapeMatchingWCuedTS_shapeMatching_off_cue_switch_cost": (
             "1/2*(SNN_tstay_cswitch+DNN_tstay_cswitch)-1/2*(SNN_tstay_cstay+DNN_tstay_cstay)"
             ),
 
         #cuedTS task switch cost while shapeMatching is "off"
-        "(SNN_tswitch_cswitch+DNN_tswitch_cswitch)-(SNN_tstay_cswitch+DNN_tstay_cswitch)": (
+        "shapeMatchingWCuedTS_shapeMatching_off_task_switch_cost": (
             "1/2*(SNN_tswitch_cswitch+DNN_tswitch_cswitch)-1/2*(SNN_tstay_cswitch+DNN_tstay_cswitch)"
             ),
 
         #main vars while cuedTS is "off"
-        "(SDD_tstay_cstay+DDD_tstay_cstay+DDS_tstay_cstay)-(SNN_tstay_cstay+DNN_tstay_cstay)": (
+        "shapeMatchingWCuedTS_cuedTS_off_main_vars": (
             "1/3*(SDD_tstay_cstay+DDD_tstay_cstay+DDS_tstay_cstay)-1/2*(SNN_tstay_cstay+DNN_tstay_cstay)"
             ),
 
         #cuedTS cue switch cost across all other shapeMatching trial types
-        "(SSS_tstay_cswitch+SDD_tstay_cswitch+SNN_tstay_cswitch+DSD_tstay_cswitch+DNN_tstay_cswitch+DDD_tstay_cswitch+DDS_tstay_cswitch)-"
-        "(SSS_tstay_cstay+SDD_tstay_cstay+SNN_tstay_cstay+DSD_tstay_cstay+DNN_tstay_cstay+DDD_tstay_cstay+DDS_tstay_cstay)": (
+        "shapeMatchingWCuedTS_shapeMatching_cue_switch_cost": (
             "1/7*(SSS_tstay_cswitch+SDD_tstay_cswitch+SNN_tstay_cswitch+DSD_tstay_cswitch+DNN_tstay_cswitch+DDD_tstay_cswitch+DDS_tstay_cswitch)-"
             "1/7*(SSS_tstay_cstay+SDD_tstay_cstay+SNN_tstay_cstay+DSD_tstay_cstay+DNN_tstay_cstay+DDD_tstay_cstay+DDS_tstay_cstay)"
             ),
 
         #cuedTS task switch cost across all other shapeMatching trial types
-        "(SSS_tswitch_cswitch+SDD_tswitch_cswitch+SNN_tswitch_cswitch+"
-        "DSD_tswitch_cswitch+DNN_tswitch_cswitch+DDD_tswitch_cswitch+DDS_tswitch_cswitch)-"
-        "(SSS_tstay_cswitch+SDD_tstay_cswitch+SNN_tstay_cswitch+DSD_tstay_cswitch+"
-        "DNN_tstay_cswitch+DDD_tstay_cswitch+DDS_tstay_cswitch)": (
+        "shapeMatchingWCuedTS_shapeMatching_task_switch_cost": (
             "1/7*(SSS_tswitch_cswitch+SDD_tswitch_cswitch+SNN_tswitch_cswitch+DSD_tswitch_cswitch+"
             "DNN_tswitch_cswitch+DDD_tswitch_cswitch+DDS_tswitch_cswitch)-"
             "1/7*(SSS_tstay_cswitch+SDD_tstay_cswitch+SNN_tstay_cswitch+DSD_tstay_cswitch+"
@@ -1930,17 +1883,14 @@ dual_tasks_config = {
             ),
 
         #main vars across all other cuedTS trial types
-        "(SDD_tstay_cstay+DDD_tstay_cstay+DDS_tstay_cstay+SDD_tstay_cswitch+DDD_tstay_cswitch+"
-        "DDS_tstay_cswitch+SDD_tswitch_cswitch+DDD_tswitch_cswitch+DDS_tswitch_cswitch)-"
-        "(SNN_tstay_cstay+DNN_tstay_cstay+SNN_tstay_cswitch+DNN_tstay_cswitch+SNN_tswitch_cswitch+DNN_tswitch_cswitch)": (
+        "shapeMatchingWCuedTS_cuedTS_main_vars": (
             "1/9*(SDD_tstay_cstay+DDD_tstay_cstay+DDS_tstay_cstay+SDD_tstay_cswitch+"
             "DDD_tstay_cswitch+DDS_tstay_cswitch+SDD_tswitch_cswitch+DDD_tswitch_cswitch+DDS_tswitch_cswitch)-"
             "1/6*(SNN_tstay_cstay+DNN_tstay_cstay+SNN_tstay_cswitch+DNN_tstay_cswitch+SNN_tswitch_cswitch+DNN_tswitch_cswitch)"
             ),
 
         #interaction for cue switch cost
-        "((SDD_tstay_cswitch+DDD_tstay_cswitch+DDS_tstay_cswitch)-(SDD_tstay_cstay+DDD_tstay_cstay+DDS_tstay_cstay))-"
-        "((SNN_tstay_cswitch+DNN_tstay_cswitch)-(SNN_tstay_cstay+DNN_tstay_cstay))": (
+        "shapeMatchingWCuedTS_cue_switch_cost_interaction": (
             "1/3*(SDD_tstay_cswitch+DDD_tstay_cswitch+DDS_tstay_cswitch)-"
             "1/3*(SDD_tstay_cstay+DDD_tstay_cstay+DDS_tstay_cstay)-"
             "1/2*(SNN_tstay_cswitch+DNN_tstay_cswitch)"
@@ -1948,10 +1898,7 @@ dual_tasks_config = {
             ),
 
         #interaction for task switch cost
-        "((SDD_tswitch_cswitch+DDD_tswitch_cswitch+DDS_tswitch_cswitch)-"
-        "(SDD_tstay_cswitch+DDD_tstay_cswitch+DDS_tstay_cswitch))-"
-        "((SNN_tswitch_cswitch+DNN_tswitch_cswitch)-"
-        "(SNN_tstay_cswitch+DNN_tstay_cswitch))": (
+        "shapeMatchingWCuedTS_task_switch_cost_interaction": (
             "1/3*(SDD_tswitch_cswitch+DDD_tswitch_cswitch+DDS_tswitch_cswitch)-"
             "1/3*(SDD_tstay_cswitch+DDD_tstay_cswitch+DDS_tstay_cswitch)-"
             "1/2*(SNN_tswitch_cswitch+DNN_tswitch_cswitch)+"

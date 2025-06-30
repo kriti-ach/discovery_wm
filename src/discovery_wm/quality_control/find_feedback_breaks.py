@@ -55,29 +55,59 @@ def extract_subj_ses_task_run(fname):
 # Set the path to your events files directory
 bids_dir, _, _, _, _, _, behavioral_dir = get_path_config()
 
-# Clear the file before starting the loop
-with open("actual_num_feedback_breaks.txt", "w") as f:
-    pass
-
-with open("observed_num_feedback_breaks.txt", "w") as f:
-    pass
+# Initialize DataFrames to store the results
+observed_breaks_data = []
+actual_breaks_data = []
 
 all_subjects = get_all_subj_paths(bids_dir)
 sessions_of_interest = {"ses-11", "ses-12"}
+sessions_of_interest_for_some_subjects = {'ses-12', 'ses-13'}
+subjects_with_different_sessions = {'sub-s1189', 'sub-s1292'}
 
 for subj in all_subjects:
+    if subj.name in subjects_with_different_sessions:
+        ses_of_interest = sessions_of_interest_for_some_subjects
+    else:
+        ses_of_interest = sessions_of_interest
     for ses in get_subj_sessions(subj):
-        if ses.name in sessions_of_interest:
+        if ses.name in ses_of_interest:
             func_dir = ses / "func"
             for f in func_dir.rglob("*_events.tsv"):
                 df = pd.read_csv(f, sep="\t")
                 subj_str, ses_str, task_str, run_str = extract_subj_ses_task_run(f.name)
+                n_perf, n_break = find_num_feedback_breaks(df)
+                observed_breaks_data.append({
+                    'Subject': subj_str,
+                    'Session': ses_str,
+                    'Task': task_str,
+                    'Run': run_str,
+                    'Performance Feedback Breaks': n_perf,
+                    'Regular Breaks': n_break
+                })
                 if task_str == 'stopSignalWDirectedForgetting':
-                    n_perf, n_break = find_num_feedback_breaks(df)
-                    if n_perf >= 1:
-                        with open("observed_num_feedback_breaks.txt", "a") as f:
-                            f.write(f"{subj_str}, {ses_str}, {task_str}, {run_str}: {n_perf} performance feedback breaks, {n_break} regular breaks\n")
                     n_should_have_received = find_correct_num_feedback_breaks(df)
-                    with open("actual_num_feedback_breaks.txt", "a") as f:
-                        if n_should_have_received != n_perf:
-                            f.write(f"{subj_str}, {ses_str}, {task_str}, {run_str}: should have recevived {n_should_have_received} performance based feedback breaks but received {n_perf}\n")
+                    if n_should_have_received != n_perf:
+                        actual_breaks_data.append({
+                            'Subject': subj_str,
+                            'Session': ses_str,
+                            'Task': task_str,
+                            'Run': run_str,
+                            'Expected Breaks': n_should_have_received,
+                            'Actual Breaks': n_perf
+                        })
+
+# Convert to DataFrames and save as CSV
+observed_df = pd.DataFrame(observed_breaks_data)
+actual_df = pd.DataFrame(actual_breaks_data)
+
+# Sort DataFrames - group by task first, then sort by subject and session within each task group
+observed_df = observed_df.sort_values(['Task', 'Subject', 'Session'], 
+                                    ascending=[True, True, True],
+                                    kind='stable')  # Use stable sort to maintain original order within groups
+actual_df = actual_df.sort_values(['Task', 'Subject', 'Session'], 
+                                ascending=[True, True, True],
+                                kind='stable')  # Use stable sort to maintain original order within groups
+
+# Save to CSV files
+observed_df.to_csv("observed_num_feedback_breaks.csv", index=False)
+actual_df.to_csv("actual_num_feedback_breaks.csv", index=False)

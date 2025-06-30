@@ -199,7 +199,7 @@ def create_events_df(filename, short_name):
     #     df[col] = df[col].replace('nan', 'n/a')
     
     # Fixing "na" to "n/a" for spatialTS 
-    if exp_id == 'spatial_task_switching_single_task_network__fmri':
+    if 'spatial_task_switching' in exp_id:
         df.loc[(df['trial_id'] == 'test_trial') & (df['trial_type'] == 'na'), 'trial_type'] = 'tn/a_cn/a'
         df.loc[(df['trial_id'] == 'test_trial') & (df['trial_type'] == 'tn/a_cn/a'), 'task_switch'] = 'tn/a_cn/a'
 
@@ -214,9 +214,9 @@ def main():
     logging.basicConfig(level=logging.INFO)
     logging.info("Creating events files")
 
-    bids_dir, _, _, _, _, _, behavioral_dir = get_path_config()
+    _, _, _, _, _, glm_data_dir, behavioral_dir = get_path_config()
 
-    all_subjects = get_all_subj_paths(bids_dir)
+    all_subjects = get_all_subj_paths(glm_data_dir)
     
     for subj in all_subjects:
         sessions = get_subj_sessions(subj)

@@ -35,7 +35,7 @@ TASKS=(
     # "nBack"
     # "shapeMatching"
     # "spatialTS"
-    "stopSignal"
+    # "stopSignal"
 )
 
 DUAL_TASKS=(

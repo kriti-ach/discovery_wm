@@ -14,6 +14,7 @@ from discovery_wm.glm.config import contrasts_config, regressor_config
 from discovery_wm.glm.dual_task_config import dual_tasks_config, dual_tasks_regressor_config
 from discovery_wm.glm.quality_control import get_all_contrast_vif
 from discovery_wm.utils import get_path_config, get_parser, get_subj_id
+import re
 
 def get_mean_rt_query(task_name: str):
     if 'stopSignal' in task_name:
@@ -32,18 +33,17 @@ def get_mean_rt_query(task_name: str):
 def calculate_mean_rt(files: dict, task_name: str):
     mean_rts = []
     query_string = get_mean_rt_query(task_name)
-    print(f'query_string: {query_string}')
     
     for session in files:
-        # Read the events file once and store in df
-        df = pd.read_csv(files[session]["events"], sep='\t')
-        subset = df.query(query_string)
-        print(f'Subset: {subset}')
-        print(f'Subset[response time]: {subset['response_time']}')
-        mean_rt = subset['response_time'].mean()
-        mean_rts.append(mean_rt)
+        for run in files[session]:
+            # Read the events file once and store in df
+            df = pd.read_csv(files[session][run]["events"], sep='\t')
+            subset = df.query(query_string)
+            mean_rt = subset['response_time'].mean()
+            if pd.notna(mean_rt):
+                mean_rts.append(mean_rt)
         
-    return np.mean(mean_rts)
+    return np.mean(mean_rts) if mean_rts else np.nan
 
 def get_nscans(datafile: Path):
     """
@@ -66,9 +66,9 @@ def get_nscans(datafile: Path):
     except Exception as e:
         raise ValueError(f"Failed to read image file {datafile}: {str(e)}") from e
 
-def get_files(subj_dir: Path, task_name: str, expected_file_count: int = 6):
+def get_files(subj_dir: Path, task_name: str):
     """
-    Parse the GLM directory and return a dictionary of files.
+    Parse the GLM directory and return a dictionary of files, nested by session and run.
     
     Files identified:
     - "events": events.tsv file
@@ -82,75 +82,63 @@ def get_files(subj_dir: Path, task_name: str, expected_file_count: int = 6):
     """
 
     files = {}
+    run_pattern = re.compile(r'run-\d+')
 
     for file in sorted(
         subj_dir.glob(f"ses-*/func/*task-{task_name}_*"),
-        key=lambda x: x.parts[-2]
+        key=lambda x: (x.parts[-3], x.name) # Sort by session then filename
     ):
         session_name = file.parts[-3]
+        
+        run_match = run_pattern.search(file.name)
+        if not run_match:
+            print(f"Skipping file without run number: {file.name}")
+            continue
+        run_name = run_match.group(0)
 
+        # Correctly initialize nested dictionaries
         if session_name not in files:
             files[session_name] = {}
+        if run_name not in files[session_name]:
+            files[session_name][run_name] = {}
 
         file_name = file.name
         if "events.tsv" in file_name:
-            files[session_name]["events"] = file
+            files[session_name][run_name]["events"] = file
         elif "desc-confounds_timeseries.tsv" in file_name:
-            files[session_name]["confounds"] = file
-        # elif "ICA_mixing.tsv" in file_name:
-        #     files[session_name]["ica_mixing"] = file
-        # elif "ICA_status_table.tsv" in file_name:
-        #     files[session_name]["ica_status"] = file
+            files[session_name][run_name]["confounds"] = file
+        elif "ICA_mixing.tsv" in file_name:
+            files[session_name][run_name]["ica_mixing"] = file
+        elif "ICA_status_table.tsv" in file_name:
+            files[session_name][run_name]["ica_status"] = file
         elif "T1w_desc-optcom_bold.nii.gz" in file_name:
-            files[session_name]["t1w_data"] = file
+            files[session_name][run_name]["t1w_data"] = file
         elif "T1w_desc-brain_mask.nii.gz" in file_name:
-            files[session_name]["t1w_brain_mask"] = file
+            files[session_name][run_name]["t1w_brain_mask"] = file
         elif "MNI152NLin2009cAsym_res-2_desc-optcom_bold.nii.gz" in file_name:
-            files[session_name]["mni_data"] = file
+            files[session_name][run_name]["mni_data"] = file
         elif "MNI152NLin2009cAsym_res-2_desc-brain_mask.nii.gz" in file_name:
-            files[session_name]["mni_brain_mask"] = file
+            files[session_name][run_name]["mni_brain_mask"] = file
 
     # Define required files (everything except ICA files)
     required_keys = ["events", "confounds", "t1w_data", "t1w_brain_mask", 
                      "mni_data", "mni_brain_mask"]
     
-    for session_name, session_files in files.items():
-        # Count how many required files are present
-        required_count = sum(1 for key in required_keys if key in session_files)
+    # Collect only sessions and runs with all required files
+    valid_files = {}
+    for session_name, runs in files.items():
+        valid_runs = {}
+        for run_name, run_files in runs.items():
+            missing = [key for key in required_keys if key not in run_files]
+            if missing:
+                print(f"Skipping {session_name}/{run_name}: missing required files: {', '.join(missing)}")
+                continue
+            valid_runs[run_name] = run_files
         
-        # Check that all required files are present
-        if required_count != len(required_keys):
-            missing = [key for key in required_keys if key not in session_files]
-            raise AssertionError(
-                f"{session_name} is missing required files: {', '.join(missing)}"
-            )
-        
-        # Optional check on total count if you still want to use expected_file_count
-        actual_count = len(session_files)
-        if actual_count != expected_file_count:
-            # If count is less than expected, make sure only ICA files are missing
-            if actual_count >= expected_file_count - 2:  # Could be missing up to 2 ICA files
-                missing_ica = []
-                if "ica_mixing" not in session_files:
-                    missing_ica.append("ica_mixing")
-                if "ica_status" not in session_files:
-                    missing_ica.append("ica_status")
-                
-                # If the only missing files are ICA files, this is acceptable
-                if len(missing_ica) == expected_file_count - actual_count:
-                    pass  # This is fine, only ICA files are missing
-                else:
-                    # Something else is missing or extra files present
-                    raise AssertionError(
-                        f"{session_name} has count {actual_count} not {expected_file_count}"
-                    )
-            else:
-                # Missing more than just ICA files
-                raise AssertionError(
-                    f"{session_name} has count {actual_count} not {expected_file_count}"
-                )
+        if valid_runs:
+            valid_files[session_name] = valid_runs
 
-    return files
+    return valid_files
 
 
 def get_fmriprep_confounds(confounds_file: Path, task_name: str, is_discovery_sample: bool):
@@ -392,8 +380,6 @@ def make_regressor_and_derivative(
         con_id=cond_id,
     )
     
-    # Debug: Print the regressor names
-    print(f"Regressor names for {cond_id}: {regressor_names}")
     
     regressors = pd.DataFrame(regressor_array, columns=regressor_names)
     return regressors, reg_3col
@@ -493,7 +479,7 @@ def prepare_results_dir(subject_id: str, task_name: str, results_dir: Path = Pat
         path.mkdir(parents=True, exist_ok=True)
     return tuple(paths)
 
-def log_session_files(session, files_dict):
+def log_session_files(session, run, files_dict):
     """
     Log session files in a readable format with status indicators.
     
@@ -501,7 +487,7 @@ def log_session_files(session, files_dict):
         session (str): Session name/ID
         files_dict (dict): Dictionary of file paths for the session
     """
-    print(f"\n--- Files for {session} ---")
+    print(f"\n--- Files for {session} --- {run} ---")
     
     # Define labels for each file type for better readability
     labels = {
@@ -561,8 +547,26 @@ def main():
     # - These directories will contain the
     # - output for each of the models and
     # - quality control files for each model
+    # _, quality_control_dir, indiv_contrasts_dir, fixed_effects_dir, \
+    #     simplified_events_dir = prepare_results_dir(subj_id, task_name, Path("/oak/stanford/groups/russpold/data/network_grant/discovery_BIDS_20250402/derivatives/output_lev1_mni"))
     _, quality_control_dir, indiv_contrasts_dir, fixed_effects_dir, \
-        simplified_events_dir = prepare_results_dir(subj_id, task_name, Path("output_lev1_mni_validation"))
+        simplified_events_dir = prepare_results_dir(subj_id, task_name, Path("/oak/stanford/groups/russpold/data/network_grant/validation_BIDS/derivatives/output_lev1_mni"))
+    
+    # Clear all existing files in output directories to ensure a clean start
+    output_dirs = [quality_control_dir, indiv_contrasts_dir, fixed_effects_dir, simplified_events_dir]
+    for output_dir in output_dirs:
+        if output_dir.exists():
+            print(f"Clearing existing files in: {output_dir}")
+            for file_path in output_dir.rglob("*"):
+                if file_path.is_file():
+                    file_path.unlink()
+                    print(f"  Deleted: {file_path}")
+    
+    # Clear the HTML summary file at the beginning to remove any previous content
+    html_file = indiv_contrasts_dir / f"contrasts_task_{task_name}_rtmodel_response_time_centered_duration_constant_model_summary.html"
+    if html_file.exists():
+        html_file.unlink()  # Delete the file if it exists
+        print(f"Cleared previous HTML summary file: {html_file}")
     
     # Prepare data directory
     # - This directory contains the BIDS data
@@ -573,6 +577,9 @@ def main():
 
     # Get files for the subject and task
     files = get_files(subj_glm_dir, task_name)
+    if not files:
+        print(f"No files found for {subj_id} and {task_name}")
+        return
 
     # Calculate mean RT
     # - This is used to center the RT regressor
@@ -590,163 +597,168 @@ def main():
 
     # Process each session
     for session in files:
-        print(f'Processing session {session}')
+        for run in files[session]:
+            print(f'Processing session {session}, run {run}')
 
-        # Get files for the current session
-        events = files[session]["events"]
-        t1w_data = files[session]["t1w_data"]
-        confounds = files[session]["confounds"]
-        t1w_brain_mask = files[session]["t1w_brain_mask"]
-        mni_data = files[session]["mni_data"]
-        mni_brain_mask = files[session]["mni_brain_mask"]
-        # ica_mixing = files[session]["ica_mixing"]
-        # ica_status = files[session]["ica_status"]
-    
-        # Log all files for this session
-        # TODO: Check this logging in next run
-        log_session_files(session, files[session])
+            # Get files for the current session
+            events = files[session][run]["events"]
+            t1w_data = files[session][run]["t1w_data"]
+            confounds = files[session][run]["confounds"]
+            t1w_brain_mask = files[session][run]["t1w_brain_mask"]
+            mni_data = files[session][run]["mni_data"]
+            mni_brain_mask = files[session][run]["mni_brain_mask"]
+            # ica_mixing = files[session][run]["ica_mixing"]
+            # ica_status = files[session][run]["ica_status"]
+        
+            # Log all files for this session
+            # TODO: Check this logging in next run
+            log_session_files(session, run, files[session][run])
 
-        # Get the number of timepoints in the current session
-        # - this is used to create the regressors
-        # nscans = get_nscans(t1w_data)
-        nscans = get_nscans(mni_data)
+            # Get the number of timepoints in the current session
+            # - this is used to create the regressors
+            # nscans = get_nscans(t1w_data)
+            nscans = get_nscans(mni_data)
 
-        # - These are the confounds that are created by TEDANA / FMRIPREP
-        # - These map onto motion parameters
-        # TODO: change flag if running validation sample. 
-        confound_regressors = get_fmriprep_confounds(confounds, task_name, is_discovery_sample=True)
+            # - These are the confounds that are created by TEDANA / FMRIPREP
+            # - These map onto motion parameters
+            # TODO: change flag if running validation sample. 
+            confound_regressors = get_fmriprep_confounds(confounds, task_name, is_discovery_sample=True)
 
-        # # Add tedana rejected components to confounds
-        # confound_regressors = get_tedana_confounds(files, session, confound_regressors)
+            # # Add tedana rejected components to confounds
+            # confound_regressors = get_tedana_confounds(files, session, confound_regressors)
 
-        # EVENTS
-        # - These are the events corresponding to the task
-        # - Here, we add the nuisance trials to the events dataframe
-        events_df = pd.read_csv(events, sep="\t", dtype={'response_time': float})
-        (
-            events_df["junk_trials"],
-            events_df["omission"],
-            events_df["commission"],
-            events_df["rt_fast"],
-        ) = define_nuisance_trials(events_df, task_name)
+            # EVENTS
+            # - These are the events corresponding to the task
+            # - Here, we add the nuisance trials to the events dataframe
+            events_df = pd.read_csv(events, sep="\t", dtype={'response_time': float})
+            (
+                events_df["junk_trials"],
+                events_df["omission"],
+                events_df["commission"],
+                events_df["rt_fast"],
+            ) = define_nuisance_trials(events_df, task_name)
 
-        # TODO: Add to quality control
-        # Remove unused variable or use it
-        percent_junk = np.mean(events_df["junk_trials"])
+            # TODO: Add to quality control
+            # Remove unused variable or use it
+            percent_junk = np.mean(events_df["junk_trials"])
 
-        # Add column containing all 1s
-        events_df["constant_1_column"] = 1
+            # Add column containing all 1s
+            events_df["constant_1_column"] = 1
 
-        # Add response_time_centered column for RT regressor
-        events_df["response_time_centered"] = events_df.response_time - mean_rt
+            # Add response_time_centered column for RT regressor
+            events_df["response_time_centered"] = events_df.response_time - mean_rt
 
-        # Add break period if needed
-        if model_break:
-            reg_config[task_name]["break_period"] = {
-                "amplitude_column": "constant_1_column",
-                "duration_column": "duration",
-                "subset": 'trial_id == "break_with_performance_feedback"',
-            }
+            # Add break period if needed
+            if model_break:
+                reg_config[task_name]["break_period"] = {
+                    "amplitude_column": "constant_1_column",
+                    "duration_column": "duration",
+                    "subset": 'trial_id == "break_with_performance_feedback"',
+                }
+                print(f'model_break: {model_break}')
+                print(f'reg_config[task_name]["break_period"]: {reg_config[task_name]["break_period"]}')
 
-        # Create regressors from config
-        regressors_dict, regressor_dfs = create_regressors_from_config(
-            reg_config, events_df, nscans, tr, task_name
-        )
-
-        # Create design matrix
-        design_matrix = pd.concat(
-            [regressors_dict[name] for name in regressors_dict] + [confound_regressors],
-            axis=1,
-        )
-
-        simplified_events_df = create_simplified_events_df(regressor_dfs)
-        simplified_events_df.to_csv(
-            f"{simplified_events_dir}/{subj_id}_{session}_task-{task_name}_"
-            f"simplified_events.csv",
-            index=False
-        )
-
-        design_matrix['constant'] = 1
-
-        # Print design matrix column names for debugging
-        print("Design matrix columns:", design_matrix.columns.tolist())
-
-        exclusion, any_fail = qa_design_matrix(
-            indiv_contrasts_dir,
-            contrasts,
-            design_matrix,
-            subj_id,
-            task_name,
-            session,
-            percent_junk=percent_junk,
-        )
-
-        print(exclusion)
-        print(any_fail)
-
-        add_to_html_summary(
-            subj_id,
-            contrasts,
-            design_matrix,
-            indiv_contrasts_dir,
-            regress_rt="response_time_centered",
-            duration_choice="constant",
-            task=task_name,
-            any_fail=any_fail,
-            exclusion=exclusion,
-            session=session,
-            percent_junk=percent_junk,
-            # model_break=True,
-            # add_deriv=False,
-            # only_breaks_with_performance_feedback=True
-        )
-
-        # Fit GLM to the data
-        fmri_glm = FirstLevelModel(
-            tr,
-            subject_label=subj_id,
-            # mask_img=t1w_brain_mask,
-            mask_img=mni_brain_mask,
-            noise_model="ar1",
-            standardize=False,
-            drift_model=None,
-            smoothing_fwhm=5,
-            minimize_memory=True,
-        )
-
-        # out = fmri_glm.fit(t1w_data, design_matrices=design_matrix)
-        out = fmri_glm.fit(mni_data, design_matrices=design_matrix)
-        # Save the contrasts
-        for contrast_name, contrast_formula in contrasts.items():
-            con_est = out.compute_contrast(contrast_formula, output_type="all")
-            
-            # Get effect size, variance, and z-score
-            effect_size = con_est["effect_size"]
-            variance = con_est["effect_variance"]
-            z_score = con_est["z_score"]
-
-            # Save to file
-            effect_size.to_filename(
-                f"{indiv_contrasts_dir}/{subj_id}_{session}_task-{task_name}_"
-                f"contrast-{contrast_name}_rtmodel-rt_centered_stat-effect-size.nii.gz"
-            )
-            variance.to_filename(
-                f"{indiv_contrasts_dir}/{subj_id}_{session}_task-{task_name}_"
-                f"contrast-{contrast_name}_rtmodel-rt_centered_stat-variance.nii.gz"
-            )
-            z_score.to_filename(
-                f"{indiv_contrasts_dir}/{subj_id}_{session}_task-{task_name}_"
-                f"contrast-{contrast_name}_rtmodel-rt_centered_stat-z_score.nii.gz"
+            # Create regressors from config
+            regressors_dict, regressor_dfs = create_regressors_from_config(
+                reg_config, events_df, nscans, tr, task_name
             )
 
-        # QUALITY CONTROL
-        # - Save out VIFs for each contrast
-        vif_contrasts = get_all_contrast_vif(design_matrix, contrasts)
-        vif_contrasts.to_csv(
-            f"{quality_control_dir}/{subj_id}_{session}_task-{task_name}_"
-            f"rtmodel-rt_centered_stat-vif_contrasts.csv",
-            index=False
-        )
+            # Create design matrix
+            design_matrix = pd.concat(
+                [regressors_dict[name] for name in regressors_dict] + [confound_regressors],
+                axis=1,
+            )
+
+            simplified_events_df = create_simplified_events_df(regressor_dfs)
+            simplified_events_df.to_csv(
+                f"{simplified_events_dir}/{subj_id}_{session}_{run}_task-{task_name}_"
+                f"simplified_events.csv",
+                index=False
+            )
+
+            design_matrix['constant'] = 1
+
+            # Print design matrix column names for debugging
+            print("Design matrix columns:", design_matrix.columns.tolist())
+
+            exclusion, any_fail = qa_design_matrix(
+                indiv_contrasts_dir,
+                contrasts,
+                design_matrix,
+                subj_id,
+                task_name,
+                session,  
+                percent_junk=percent_junk,
+            )
+
+            print(exclusion)
+            print(any_fail)
+
+            print(f'run: {run}')
+            add_to_html_summary(
+                subj_id,
+                contrasts,
+                design_matrix,
+                indiv_contrasts_dir,
+                regress_rt="response_time_centered",
+                duration_choice="constant",
+                task=task_name,
+                any_fail=any_fail,
+                exclusion=exclusion,
+                session=session,
+                run=run,
+                percent_junk=percent_junk,
+                # model_break=True,
+                # add_deriv=False,
+                # only_breaks_with_performance_feedback=True
+            )
+
+            # Fit GLM to the data
+            fmri_glm = FirstLevelModel(
+                tr,
+                subject_label=subj_id,
+                # mask_img=t1w_brain_mask,
+                mask_img=mni_brain_mask,
+                noise_model="ar1",
+                standardize=False,
+                drift_model=None,
+                smoothing_fwhm=5,
+                minimize_memory=True,
+            )
+
+            # out = fmri_glm.fit(t1w_data, design_matrices=design_matrix)
+            out = fmri_glm.fit(mni_data, design_matrices=design_matrix)
+            # Save the contrasts
+            for contrast_name, contrast_formula in contrasts.items():
+                con_est = out.compute_contrast(contrast_formula, output_type="all")
+                
+                # Get effect size, variance, and z-score
+                effect_size = con_est["effect_size"]
+                variance = con_est["effect_variance"]
+                z_score = con_est["z_score"]
+
+                # Save to file
+                effect_size.to_filename(
+                    f"{indiv_contrasts_dir}/{subj_id}_{session}_{run}_task-{task_name}_"
+                    f"contrast-{contrast_name}_rtmodel-rt_centered_stat-effect-size.nii.gz"
+                )
+                variance.to_filename(
+                    f"{indiv_contrasts_dir}/{subj_id}_{session}_{run}_task-{task_name}_"
+                    f"contrast-{contrast_name}_rtmodel-rt_centered_stat-variance.nii.gz"
+                )
+                z_score.to_filename(
+                    f"{indiv_contrasts_dir}/{subj_id}_{session}_{run}_task-{task_name}_"
+                    f"contrast-{contrast_name}_rtmodel-rt_centered_stat-z_score.nii.gz"
+                )
+
+            # QUALITY CONTROL
+            # - Save out VIFs for each contrast
+            vif_contrasts = get_all_contrast_vif(design_matrix, contrasts)
+            vif_contrasts.to_csv(
+                f"{quality_control_dir}/{subj_id}_{session}_{run}_task-{task_name}_"
+                f"rtmodel-rt_centered_stat-vif_contrasts.csv",
+                index=False
+            )
 
     print("Contrasts: ", all_contrast_names)
 

@@ -18,9 +18,14 @@ import os
 def create_tr_dict(average=True):
     tr_dict = {}
     for task in ['cuedTS', 'directedForgetting', 'flanker', 'goNogo',
-            'nBack', 'stopSignal', 'spatialTS', 'shapeMatching']:
+            'nBack', 'stopSignal', 'spatialTS', 'shapeMatching',
+            "directedForgettingWFlanker", 
+            "stopSignalWDirectedForgetting", "stopSignalWFlanker", 
+            "spatialTSWCuedTS", "directedForgettingWCuedTS", 
+            "flankerWShapeMatching", "cuedTSWFlanker", "spatialTSWShapeMatching", 
+            "nBackWShapeMatching", "nBackWSpatialTS"]:
         tr_list = []
-        img_files = glob.glob(f'/oak/stanford/groups/russpold/data/network_grant/discovery_BIDS_20250402/derivatives/glm_data/*/*/func/*task-{task}_*_bold.nii.gz')
+        img_files = glob.glob(f'/oak/stanford/groups/russpold/data/network_grant/validation_BIDS/derivatives/glm_data/*/*/func/*task-{task}_*_bold.nii.gz')
         for img in img_files:
             img = nib.load(img)
             tr_list.append(img.shape[-1])
@@ -92,15 +97,19 @@ def est_vif(desmat_vif):
     from numpy.linalg import LinAlgError
 
     desmat_with_intercept = desmat_vif.copy()
-    desmat_with_intercept['intercept'] = 1
+    desmat_with_intercept['intercept'] = 1 
     vif_data = pd.DataFrame()
     vif_data["regressor"] = desmat_with_intercept.columns
 
     try:
         vif_data["VIF"] = [variance_inflation_factor(desmat_with_intercept.values, i)
-                        for i in range(desmat_with_intercept.shape[1])]
+                        for i in range(desmat_with_intercept.shape[1])]          
     except LinAlgError:
         print("SVD did not converge. Handling the error...")
+        vif_data["VIF"] = [0 for i in range(desmat_with_intercept.shape[1])]
+    except Exception as e:
+        print(f"Error in VIF calculation: {e}")
+        print(f"Error type: {type(e)}")
         vif_data["VIF"] = [0 for i in range(desmat_with_intercept.shape[1])]
 
     return vif_data
@@ -161,17 +170,18 @@ def get_all_contrast_vif(desmat, contrasts):
     return vif_contrasts
 
 
-def add_to_html_summary(subid, contrasts, desmat, outdir, regress_rt, duration_choice, task, any_fail, exclusion, session, percent_junk):
+def add_to_html_summary(subid, contrasts, desmat, outdir, regress_rt, duration_choice, task, any_fail, exclusion, session, run, percent_junk):
+    print(f'run in add_to_html_summary: {run}')
     desmat = desmat.interpolate()
     desmat_fig = plot_design_matrix(desmat)
     desmat_tmpfile = BytesIO()
     desmat_fig.figure.savefig(desmat_tmpfile, format='png', dpi=60)
     desmat_encoded = base64.b64encode(desmat_tmpfile.getvalue()).decode('utf-8')
     if not any_fail:
-        html_desmat = f'<h2>{task} design for subject {subid} {session}</h2>' + '<img src=\'data:image/png;base64,{}\'>'.format(desmat_encoded) + '<br>'
+        html_desmat = f'<h2>{task} design for subject {subid} {session} {run}</h2>' + '<img src=\'data:image/png;base64,{}\'>'.format(desmat_encoded) + '<br>'
     if any_fail:
         print('ANY FAIL!')
-        html_desmat = f'<h2>Check details <br> {exclusion.T.to_html()} <br> {task} design for subject {subid} {session}</h2>' + '<img src=\'data:image/png;base64,{}\'>'.format(desmat_encoded) + '<br>'
+        html_desmat = f'<h2>Check details <br> {exclusion.T.to_html()} <br> {task} design for subject {subid} {session} {run}</h2>' + '<img src=\'data:image/png;base64,{}\'>'.format(desmat_encoded) + '<br>'
 
     design_column_names = desmat.columns.tolist()
     contrast_matrix = []
@@ -199,7 +209,7 @@ def add_to_html_summary(subid, contrasts, desmat, outdir, regress_rt, duration_c
     contrast_tmpfile = BytesIO()
     contrast_fig.figure.savefig(contrast_tmpfile, format='png', dpi=75)
     contrast_encoded = base64.b64encode(contrast_tmpfile.getvalue()).decode('utf-8')
-    html_contrast = f'<h2>{task} contrasts for subject {subid} {session} </h2>' + '<img src=\'data:image/png;base64,{}\'>'.format(contrast_encoded) + '<br>'
+    html_contrast = f'<h2>{task} contrasts for subject {subid} {session} {run}</h2>' + '<img src=\'data:image/png;base64,{}\'>'.format(contrast_encoded) + '<br>'
  
     desmat_vif = desmat
     # [desmat.columns.drop(list(desmat.filter(regex=r'(reject)')))]
@@ -230,13 +240,14 @@ def add_to_html_summary(subid, contrasts, desmat, outdir, regress_rt, duration_c
     html_cormat = '<img src=\'data:image/png;base64,{}\'>'.format(cormat_encoded) + '<br>'
     html_file = (f'{outdir}/contrasts_task_{task}_rtmodel_{regress_rt}_'
                     f'duration_{duration_choice}_model_summary.html')
+    
     with open(html_file,'a') as f:
         f.write('<hr>')
-        f.write(f'<h2>Subject {subid} {session}</h2><br>')
+        f.write(f'<h2>Subject {subid} {session} {run}</h2><br>')
         f.write(f'<h3>Percent Junk: {percent_junk}</h3>')
         f.write(html_desmat)
         f.write(html_contrast) 
-        f.write(f'<h2>Variance inflation factors subject {subid} {session}</h2><br>')
+        f.write(f'<h2>Variance inflation factors subject {subid} {session} {run}</h2><br>')
         f.write(vif_table)
         f.write(vif_contrasts_table)
         f.write(html_cormat)
