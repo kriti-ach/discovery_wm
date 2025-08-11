@@ -9,7 +9,7 @@
 # Outputs ----------------------------------
 #SBATCH -o ./log/%x-%A-%a.out
 #SBATCH -e ./log/%x-%A-%a.err
-#SBATCH --mail-user=logben@stanford.edu
+#SBATCH --mail-user=kritiach@stanford.edu
 #SBATCH --mail-type=END
 # ------------------------------------------
 
@@ -18,7 +18,7 @@
 
 Name: launch_all_lev2.sbatch
 
-Description: This script launches all second-level models on the discovery sample dataset. 
+Description: This script launches second-level models for dual tasks (tasks with W in the name) on the discovery sample dataset. 
 
 Usage: sbatch ./batch/launch_all_lev2.sbatch
 
@@ -26,11 +26,31 @@ Notes:
 
 '
 # Run the second-level model script
-echo "Running all second-level models"
+echo "Running second-level models for dual tasks"
 second_level_script="src/discovery_wm/glm/second_level.py"
-cmd="uv run $second_level_script"
-echo "Running command: $cmd"
-$cmd
+
+# List of dual tasks
+DUAL_TASKS=(
+    "directedForgettingWCuedTS"
+    # "directedForgettingWFlanker"
+    # "stopSignalWDirectedForgetting"
+    # "stopSignalWFlanker"
+    # "spatialTSWCuedTS"
+    # "flankerWShapeMatching"
+    # "cuedTSWFlanker"
+    # "spatialTSWShapeMatching"
+    # "nBackWShapeMatching"
+    # "nBackWSpatialTS"
+    # "shapeMatchingWCuedTS"
+)
+
+# Run the script for each dual task
+for task in "${DUAL_TASKS[@]}"; do
+    echo "Processing task: $task"
+    cmd="uv run $second_level_script --task-name $task"
+    echo "Running command: $cmd"
+    $cmd
+done
 
 # Zip the output directory after completion
 echo "Zipping output directory"

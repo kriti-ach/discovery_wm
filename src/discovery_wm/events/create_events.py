@@ -5,6 +5,7 @@ from discovery_wm.events.utils import cal_time_elapsed, get_neg_rt_correction, a
 from pathlib import Path
 import pandas as pd
 import numpy as np
+import re
 
 def get_unique_tasks(func_files):
     """Get all unique tasks in the behavioral directory."""
@@ -24,7 +25,8 @@ def find_matching_behavioral_dir(subj, ses, behavioral_dir):
     subj = subj.replace("sub-", "")
     target_dir = os.path.join(behavioral_dir, subj, ses)
     if not os.path.exists(target_dir):
-        raise ValueError(f"No matching behavioral directory found for {subj} {ses}")
+        print(f"Skipping: No matching behavioral directory found for {subj} {ses}")
+        return None
     return target_dir
 
 def long_name_to_short_name(long_name):
@@ -44,7 +46,18 @@ def long_name_to_short_name(long_name):
         'directed_forgetting_with_flanker': 'directedForgettingWFlanker', 
         'cued_switching': 'cuedTS',
         's43_stop_w_flanker.csv': 'stopSignalWFlanker',
-        's43.csv': 'stopSignalWFlanker'
+        's43.csv': 'stopSignalWFlanker',
+        'directed_forgetting_with_cued_task_switching': 'directedForgettingWCuedTS',
+        'cued_task_switching_with_directed_forgetting': 'directedForgettingWCuedTS',
+        'spatial_task_switching_with_cued_task_switching': 'spatialTSWCuedTS',
+        'flanker_with_shape_matching': 'flankerWShapeMatching',
+        'cued_task_switching_with_flanker': 'cuedTSWFlanker',
+        'spatial_task_switching_with_shape_matching': 'spatialTSWShapeMatching',
+        'shape_matching_with_spatial_task_switching': 'spatialTSWShapeMatching',
+        'n_back_with_shape_matching': 'nBackWShapeMatching',
+        'n_back_with_spatial_task_switching': 'nBackWSpatialTS',
+        'flanker_with_cued_task_switching': 'cuedTSWFlanker',
+        'shape_matching_with_cued_task_switching': 'shapeMatchingWCuedTS'
     }
     return mapping[long_name]
         
@@ -98,9 +111,11 @@ def rename_cells(df, exp_id):
         'spatial_task_switching_with_cued_task_switching__fmri': {'test_cue_block': 'test_cue', 'fixation': 'test_fixation', 'feedback_block': 'break'},
         'flanker_with_shape_matching__fmri': {'feedback_block': 'break'},
         'flanker_with_cued_task_switching__fmri': {'practice-stop-feedback': 'break'},
+        'flanker_with_cued_task_switching': {'practice-stop-feedback': 'break'},
         'n_back_with_shape_matching__fmri': {'feedback_block': 'break', 'fixation': 'test_fixation'},
         'shape_matching_with_spatial_task_switching__fmri': {'feedback_block': 'break', 'fixation': 'test_fixation'},
         'shape_matching_with_cued_task_switching__fmri': {'fixation': 'test_fixation', 'cue': 'test_cue', 'feedback_block': 'break'},
+        'shape_matching_with_cued_task_switching': {'fixation': 'test_fixation', 'cue': 'test_cue', 'feedback_block': 'break'},
         'n_back_with_spatial_task_switching__fmri': {'feedback_block': 'break', 'fixation': 'test_fixation'}
     }
     #get dictionary of what to change
@@ -184,7 +199,7 @@ def create_events_df(filename, short_name):
     #     df[col] = df[col].replace('nan', 'n/a')
     
     # Fixing "na" to "n/a" for spatialTS 
-    if exp_id == 'spatial_task_switching_single_task_network__fmri':
+    if 'spatial_task_switching' in exp_id:
         df.loc[(df['trial_id'] == 'test_trial') & (df['trial_type'] == 'na'), 'trial_type'] = 'tn/a_cn/a'
         df.loc[(df['trial_id'] == 'test_trial') & (df['trial_type'] == 'tn/a_cn/a'), 'task_switch'] = 'tn/a_cn/a'
 
@@ -199,31 +214,53 @@ def main():
     logging.basicConfig(level=logging.INFO)
     logging.info("Creating events files")
 
-    bids_dir, _, _, _, _, _, behavioral_dir = get_path_config()
+    _, _, _, _, _, glm_data_dir, behavioral_dir = get_path_config()
 
-    all_subjects = get_all_subj_paths(bids_dir)
+    all_subjects = get_all_subj_paths(glm_data_dir)
     
     for subj in all_subjects:
         sessions = get_subj_sessions(subj)
         for ses in sessions:
-            func_dir = ses / "func"
-            if not func_dir.exists():
-                raise ValueError(f"No func directory found for {subj} {ses}")
-            
-            func_files = list(func_dir.glob("*.nii.gz"))
-            tasks = get_unique_tasks(func_files)
+            if ses.name == 'ses-11' or ses.name == 'ses-12' or ses.name == 'ses-13':
+                print(subj.name, ses.name)
+                func_dir = ses / "func"
+                if not func_dir.exists():
+                    raise ValueError(f"No func directory found for {subj} {ses}")
+                # Delete all events.tsv files in this func_dir
+                for f in func_dir.glob("*events.tsv"):
+                    print(f"Deleting old events file: {f}")
+                    f.unlink()
+                func_files = list(func_dir.glob("*.nii.gz"))
+                tasks = get_unique_tasks(func_files)
 
-            # behavioral directory from which to create events files
-            target_dir = find_matching_behavioral_dir(subj.name, ses.name, behavioral_dir)
-            for t in list(Path(target_dir).glob("*.csv")):
-                long_name = get_task_from_filename(t.name)
-                short_name = long_name_to_short_name(long_name)
-                assert short_name in tasks, f"{short_name} not in {tasks}"
-                outname = f"{subj.name}_{ses.name}_task-{short_name}_run-1_events.tsv"
-                df = create_events_df(t, short_name)
-                outpath = ses / "func" / outname
-                print(f"Writing {outpath}")
-                df.to_csv(outpath, sep="\t", index=False)
+                # behavioral directory from which to create events files
+                target_dir = find_matching_behavioral_dir(subj.name, ses.name, behavioral_dir)
+                if target_dir is None:
+                    continue
+                
+                # Group all files for the same task
+                csv_files = list(Path(target_dir).glob("*.csv"))
+                task_to_files = {}
+
+                for t in csv_files:
+                    long_name = get_task_from_filename(t.name)
+                    short_name = long_name_to_short_name(long_name)
+                    if short_name not in tasks:
+                        continue
+                    task_to_files.setdefault(short_name, []).append(t)
+
+                for short_name, files in task_to_files.items():
+                    # Sort files: no (n) first, then by (n)
+                    def extract_num(f):
+                        match = re.search(r"\((\d+)\)", f.name)
+                        return int(match.group(1)) if match else 0
+                    files_sorted = sorted(files, key=extract_num)
+                    for run_idx, t in enumerate(files_sorted, 1):
+                        outname = f"{subj.name}_{ses.name}_task-{short_name}_run-{run_idx}_events.tsv"
+                        df = create_events_df(t, short_name)
+                        outpath = ses / "func" / outname
+                        print(f"Writing {outpath}")
+                        df.to_csv(outpath, sep="\t", index=False)
 
     return
             

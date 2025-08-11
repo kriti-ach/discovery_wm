@@ -13,7 +13,7 @@
 #     --data-root=/oak/stanford/groups/russpold/data/network_grant/discovery_BIDS_20250402/derivatives/output_lev1 \
 #     --output-dir=/home/users/jmumford/zstat_slice_grids \
 #     --output-file=zstat_slice_grid_report.pdf
-DATA_DIR=./output_lev1_mni
+DATA_DIR=./output_lev1_mni_no_ted_comp
 CURRENT_DIR=$PWD
 OUTDIR=$PWD/quality_control/zstat_slice_grids
 uv --directory $CURRENT_DIR run python $CURRENT_DIR/src/discovery_wm/quality_control/make_brain_zstat_map_grids.py \

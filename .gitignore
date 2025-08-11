@@ -39,3 +39,15 @@ __pycache__/
 .Trashes
 ehthumbs.db
 Thumbs.d
+
+# output
+output_lev1_mni_no_ted_comp/
+output_lev1_mni/
+output_lev2_mni/
+output_lev2_mni_no_ted_comp/
+output_lev2_mni_no_ted_comp.zip
+output_lev2_mni.zip
+
+# quality control outputs
+quality_control/
+!src/discovery_wm/quality_control/

@@ -63,9 +63,11 @@ def get_cols_list(exp_id):
                 'spatial_task_switching_with_cued_task_switching__fmri': common + ['task_switch', 'whichQuadrant', 'left_number', 'right_number', 'curr_cue'],
                 'flanker_with_shape_matching__fmri': common + ['flanker_condition', 'shape_matching_condition', 'flankers', 'probe', 'target', 'distractor'],
                 'flanker_with_cued_task_switching__fmri': common + ['flanker_condition', 'cue', 'task_condition', 'cue_condition', 'flanking_number'],
+                'flanker_with_cued_task_switching': common + ['flanker_condition', 'cue', 'task_condition', 'cue_condition', 'flanking_number'],
                 'n_back_with_shape_matching__fmri': common + ['n_back_condition', 'shape_matching_condition', 'probe', 'distractor', 'delay'],
                 'shape_matching_with_spatial_task_switching__fmri': common + ['shape_matching_condition', 'task_switch', 'probe', 'target', 'distractor', 'whichQuadrant'],
                 'shape_matching_with_cued_task_switching__fmri': common + ['cue', 'task_condition', 'cue_condition', 'shape_matching_condition', 'probe', 'target', 'distractor'],
+                'shape_matching_with_cued_task_switching': common + ['cue', 'task_condition', 'cue_condition', 'shape_matching_condition', 'probe', 'target', 'distractor'],
                 'n_back_with_spatial_task_switching__fmri': common + ['n_back_condition', 'task', 'probe', 'whichQuadrant']}
     to_add = lookup.get(exp_id)
     return to_add
@@ -94,8 +96,10 @@ def get_trial_type(exp_id):
             'spatial_task_switching_with_cued_task_switching__fmri': ['task_switch'],
             'flanker_with_shape_matching__fmri': ['flanker_condition', 'shape_matching_condition'],
             'flanker_with_cued_task_switching__fmri': ['cue_condition', 'task_condition', 'flanker_condition'],
+            'flanker_with_cued_task_switching': ['cue_condition', 'task_condition', 'flanker_condition'],
             'n_back_with_shape_matching__fmri': ['n_back_condition', 'shape_matching_condition', 'delay'],
             'shape_matching_with_spatial_task_switching__fmri': ['predictable_condition', 'shape_matching_condition'],
+            'shape_matching_with_spatial_task_switching': ['predictable_condition', 'shape_matching_condition'],
             'shape_matching_with_cued_task_switching__fmri': ['task_condition', 'cue_condition', 'shape_matching_condition'],
             'n_back_with_spatial_task_switching__fmri': ['n_back_condition', 'task_switch_condition']
     }
@@ -214,42 +218,50 @@ def goNogo(df):
 
 def stopSignalWDirectedForgetting(df):
     # Convert numeric columns to strings for comparison
-    stop_acc_str = df['stop_acc'].astype(str)
+    mask = df['trial_id'] == 'test_trial'
+    trial_rows = df[mask]
     
     conditions = [
-        (df['stop_signal_condition']=='go') & (df['directed_forgetting_condition']=='con'),
-        (df['stop_signal_condition']=='go') & (df['directed_forgetting_condition']=='pos'),
-        (df['stop_signal_condition']=='go') & (df['directed_forgetting_condition']=='neg'),
-        (df['stop_signal_condition']=='stop') & (df['directed_forgetting_condition']=='con') & (stop_acc_str=='1'),
-        (df['stop_signal_condition']=='stop') & (df['directed_forgetting_condition']=='pos') & (stop_acc_str=='1'),
-        (df['stop_signal_condition']=='stop') & (df['directed_forgetting_condition']=='neg') & (stop_acc_str=='1'),
-        (df['stop_signal_condition']=='stop') & (df['directed_forgetting_condition']=='con') & (stop_acc_str=='0'),
-        (df['stop_signal_condition']=='stop') & (df['directed_forgetting_condition']=='pos') & (stop_acc_str=='0'),
-        (df['stop_signal_condition']=='stop') & (df['directed_forgetting_condition']=='neg') & (stop_acc_str=='0'),
-        (df['trial_type']=='memory_cue')
+        (trial_rows['stop_signal_condition']=='go') & (trial_rows['directed_forgetting_condition']=='con'),
+        (trial_rows['stop_signal_condition']=='go') & (trial_rows['directed_forgetting_condition']=='pos'),
+        (trial_rows['stop_signal_condition']=='go') & (trial_rows['directed_forgetting_condition']=='neg'),
+        (trial_rows['stop_signal_condition']=='stop') & (trial_rows['directed_forgetting_condition']=='con') & (trial_rows['stop_acc']==1),
+        (trial_rows['stop_signal_condition']=='stop') & (trial_rows['directed_forgetting_condition']=='pos') & (trial_rows['stop_acc']==1),
+        (trial_rows['stop_signal_condition']=='stop') & (trial_rows['directed_forgetting_condition']=='neg') & (trial_rows['stop_acc']==1),
+        (trial_rows['stop_signal_condition']=='stop') & (trial_rows['directed_forgetting_condition']=='con') & (trial_rows['stop_acc']==0),
+        (trial_rows['stop_signal_condition']=='stop') & (trial_rows['directed_forgetting_condition']=='pos') & (trial_rows['stop_acc']==0),
+        (trial_rows['stop_signal_condition']=='stop') & (trial_rows['directed_forgetting_condition']=='neg') & (trial_rows['stop_acc']==0),
+        (trial_rows['trial_type']=='memory_cue')
     ]
     values = ['go_con', 'go_pos', 'go_neg', 'stop_success_con', 'stop_success_pos', 'stop_success_neg', 'stop_failure_con', 'stop_failure_pos', 'stop_failure_neg', 'memory_cue']
-    
     # Use a default value that's a string
     result = np.select(conditions, values, default='unknown')
-    df['trial_type'] = pd.Series(result).astype(object)
+    df.loc[mask, 'trial_type'] = result
+    # Ensure fixation rows have a consistent trial_type
+    fixation_mask = df['trial_id'] == 'test_fixation'
+    df.loc[fixation_mask, 'trial_type'] = 'fixation'
     
     return df
 
 def stopSignalWFlanker(df):
-    stop_acc_str = df['stop_acc'].astype(str)
+
+    mask = df['trial_id'] == 'test_trial'
+    trial_rows = df[mask]
     
     conditions = [
-        (df['stop_signal_condition']=='go') & (df['flanker_condition']=='congruent'),
-        (df['stop_signal_condition']=='go') & (df['flanker_condition']=='incongruent'),
-        (df['stop_signal_condition']=='stop') & (df['flanker_condition']=='congruent') & (stop_acc_str=='1'),
-        (df['stop_signal_condition']=='stop') & (df['flanker_condition']=='incongruent') & (stop_acc_str=='1'),
-        (df['stop_signal_condition']=='stop') & (df['flanker_condition']=='congruent') & (stop_acc_str=='0'),
-        (df['stop_signal_condition']=='stop') & (df['flanker_condition']=='incongruent') & (stop_acc_str=='0')
+        (trial_rows['stop_signal_condition']=='go') & (trial_rows['flanker_condition']=='congruent'),
+        (trial_rows['stop_signal_condition']=='go') & (trial_rows['flanker_condition']=='incongruent'),
+        (trial_rows['stop_signal_condition']=='stop') & (trial_rows['flanker_condition']=='congruent') & (trial_rows['stop_acc']==1),
+        (trial_rows['stop_signal_condition']=='stop') & (trial_rows['flanker_condition']=='incongruent') & (trial_rows['stop_acc']==1),
+        (trial_rows['stop_signal_condition']=='stop') & (trial_rows['flanker_condition']=='congruent') & (trial_rows['stop_acc']==0),
+        (trial_rows['stop_signal_condition']=='stop') & (trial_rows['flanker_condition']=='incongruent') & (trial_rows['stop_acc']==0)
     ]
     values = ['go_congruent', 'go_incongruent', 'stop_success_congruent', 'stop_success_incongruent', 'stop_failure_congruent', 'stop_failure_incongruent']
     result = np.select(conditions, values, default='unknown')
-    df['trial_type'] = pd.Series(result).astype(object)
+    df.loc[mask, 'trial_type'] = result
+    
+    fixation_mask = df['trial_id'] == 'test_fixation'
+    df.loc[fixation_mask, 'trial_type'] = 'fixation'
     return df
 
 def response_time_and_junk(df, task):

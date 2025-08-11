@@ -1,0 +1,11 @@
+Subject,Session,Task,Run,Expected Breaks,Actual Breaks
+sub-s03,ses-11,stopSignalWDirectedForgetting,run-1,0,3
+sub-s03,ses-12,stopSignalWDirectedForgetting,run-1,0,3
+sub-s10,ses-11,stopSignalWDirectedForgetting,run-1,0,3
+sub-s10,ses-12,stopSignalWDirectedForgetting,run-1,0,3
+sub-s19,ses-11,stopSignalWDirectedForgetting,run-1,0,3
+sub-s19,ses-12,stopSignalWDirectedForgetting,run-1,0,3
+sub-s29,ses-11,stopSignalWDirectedForgetting,run-1,0,3
+sub-s29,ses-12,stopSignalWDirectedForgetting,run-1,1,3
+sub-s43,ses-11,stopSignalWDirectedForgetting,run-1,1,3
+sub-s43,ses-12,stopSignalWDirectedForgetting,run-1,0,3

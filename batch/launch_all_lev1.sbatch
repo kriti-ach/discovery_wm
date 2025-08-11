@@ -9,7 +9,7 @@
 # Outputs ----------------------------------
 #SBATCH -o ./log/%x-%A-%a.out
 #SBATCH -e ./log/%x-%A-%a.err
-#SBATCH --mail-user=logben@stanford.edu
+#SBATCH --mail-user=kritiach@stanford.edu
 #SBATCH --mail-type=END
 # ------------------------------------------
 
@@ -35,11 +35,24 @@ TASKS=(
     # "nBack"
     # "shapeMatching"
     # "spatialTS"
-    "stopSignal"
+    # "stopSignal"
+)
+
+DUAL_TASKS=(
+    "directedForgettingWCuedTS"
+    "directedForgettingWFlanker"
+    "stopSignalWDirectedForgetting"
+    "stopSignalWFlanker"
+    "spatialTSWCuedTS"
+    "flankerWShapeMatching"
+    "cuedTSWFlanker"
+    "spatialTSWShapeMatching"
+    "nBackWShapeMatching"
+    "nBackWSpatialTS"
 )
 
 # Launch first-level models for each task
-for task in "${TASKS[@]}"; do
+for task in "${DUAL_TASKS[@]}"; do
     echo "Launching first-level model for task: $task"
     sbatch --job-name="lev1-model-${task}-mni" ./batch/lev1_model.sbatch "$task"
 done

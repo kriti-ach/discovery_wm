@@ -57,36 +57,35 @@ def sort_by_session_order(contrast_maps: dict) -> dict:
 
     return contrast_maps
 
-def sort_by_encounter_number(contrast_maps: dict) -> dict:
+def fixed_effects_analysis(contrast_maps: dict) -> dict:
     """
-    Organizes the contrast maps by the order in which they
-    were encountered by the subjects. Clusters contrasts across
-    subjects, used for 2.5-level analysis.
+    Performs a fixed effects analysis by combining contrast maps across encounters
+    for each subject. This is done by averaging the effect size maps.
     """
-    maps_by_encounter_number = {}
+    fixed_effects_maps = {}
     for subj in contrast_maps:
+        fixed_effects_maps[subj] = {}
         for cname in contrast_maps[subj]:
-            if cname not in maps_by_encounter_number:
-                maps_by_encounter_number[cname] = {}
-            for idx, cmap in enumerate(contrast_maps[subj][cname]):
-                if idx not in maps_by_encounter_number[cname]:
-                    maps_by_encounter_number[cname][idx] = []
-                maps_by_encounter_number[cname][idx].append((cmap, subj))
-
-    # Assert all contrasts have exactly 5 maps
-    for cname in maps_by_encounter_number:
-        count = len(maps_by_encounter_number[cname])
-        assert count == 5, (
-            f"Contrast {cname} has {count} maps, expected 5"
-        )
-
-    return maps_by_encounter_number
+            # Load all maps for this subject and contrast
+            maps = [nb.load(cmap) for cmap in contrast_maps[subj][cname]]
+            
+            # Get the data arrays
+            data_arrays = [map.get_fdata() for map in maps]
+            
+            # Average the data arrays
+            avg_data = np.mean(data_arrays, axis=0)
+            
+            # Create a new NIfTI image with the averaged data
+            avg_map = nb.Nifti1Image(avg_data, maps[0].affine, maps[0].header)
+            
+            fixed_effects_maps[subj][cname] = avg_map
+            
+    return fixed_effects_maps
 
 def plot_stat_map(
     stat_map: nb.Nifti1Image,
     threshold: float,
     cname: str,
-    idx: int,
     outdir: Path,
     template: nb.Nifti1Image,
     title: str = None,
@@ -108,7 +107,7 @@ def plot_stat_map(
         bg_img=template,
         cmap='coolwarm',
     )
-    outpath = outdir / cname / f'{cname}_encounter-{idx+1}_threshold-{threshold:.2f}.png'
+    outpath = outdir / cname / f'{cname}_threshold-{threshold:.2f}.png'
     outpath.parent.mkdir(parents=True, exist_ok=True)
     plt.tight_layout()
     plt.savefig(outpath)
@@ -124,56 +123,73 @@ def main():
     # == PATHS ==
     outdir = Path('output_lev2_mni')
     oak = Path('/oak/stanford/groups/russpold/data/')
-    bids_dir = oak / 'network_grant' / 'discovery_BIDS_20250402'
+    bids_dir = oak / 'network_grant' / 'validation_BIDS'
     output_lev1_mni = bids_dir / 'derivatives' / 'output_lev1_mni'
 
     # == GET CONTRAST MAPS ==
     contrast_maps = get_contrast_paths_by_subject_and_contrast_name(output_lev1_mni, args.task_name, args.contrast_name)
     contrast_maps_sorted = sort_by_session_order(contrast_maps)
-    contrast_maps_by_encounter_number = sort_by_encounter_number(contrast_maps_sorted)
+    
+    # Perform fixed effects analysis to collapse across encounters
+    fixed_effects_maps = fixed_effects_analysis(contrast_maps_sorted)
 
     # == THRESHOLDS ==
     liberal_threshold = 1.0
+    no_threshold = 0.0
     alpha = 0.05
 
     # == MNI TEMPLATE FOR BACKGROUND IMG ==
-    template=tf.get('MNI152NLin2009cAsym', resolution=2, suffix="T1w", desc="brain")
+    template= tf.get("MNI152NLin2009cAsym", resolution=2, suffix="T1w", desc=None) 
 
     logging.info("Starting execution of second level GLMs")
+    
+    # Get all unique contrasts across all subjects
+    all_contrasts = set()
+    for subj in fixed_effects_maps:
+        all_contrasts.update(fixed_effects_maps[subj].keys())
+    
     # == LOOP THROUGH ALL CONTRASTS AND RUN SECOND LEVEL MODEL ==
-    for cname in contrast_maps_by_encounter_number:
-        for idx in contrast_maps_by_encounter_number[cname]:
-            # == CREATE DESIGN MATRIX ==
-            logging.info(f"Running GLM for contrast: {cname}, encounter: {idx+1}")
-            cmaps, subj_ids = zip(*contrast_maps_by_encounter_number[cname][idx])
-            cmaps = [nb.load(cmap) for cmap in cmaps]
-            subj_ids = [
-                np.float64(float(subj_id.replace('sub-s', '')))
-                for subj_id in subj_ids
-            ]
-            desmat = pd.DataFrame({
-                'intercept': 1,
-                'subject': subj_ids
-            })
+    for cname in sorted(all_contrasts):
+        logging.info(f"Running GLM for contrast: {cname}")
+        
+        # Get all subject maps for this contrast, only including subjects that have this contrast
+        cmaps = []
+        subj_ids = []
+        for subj_id, subj_maps in fixed_effects_maps.items():
+            if cname in subj_maps:
+                cmaps.append(subj_maps[cname])
+                subj_ids.append(np.float64(float(subj_id.replace('sub-s', ''))))
+            
+        logging.info(f"Analyzing contrast {cname} with {len(cmaps)} subjects")
+        
+        # Create design matrix
+        desmat = pd.DataFrame({
+            'intercept': 1,
+            'subject': subj_ids
+        })
 
-            # == FIT SECOND LEVEL MODEL ==
-            second_level_model = SecondLevelModel(smoothing_fwhm=8.0)
-            second_level_model.fit(cmaps, design_matrix=desmat)
+        # == FIT SECOND LEVEL MODEL ==
+        second_level_model = SecondLevelModel(smoothing_fwhm=8.0)
+        second_level_model.fit(cmaps, design_matrix=desmat)
 
-            # == COMPUTE CONTRAST ==
-            z_map = second_level_model.compute_contrast(
-                second_level_contrast='intercept',
-                output_type='z_score'
-            )
+        # == COMPUTE CONTRAST ==
+        z_map = second_level_model.compute_contrast(
+            second_level_contrast='intercept',
+            output_type='z_score'
+        )
 
-            # == THRESHOLD MAP ==
-            thresholded_map, threshold = threshold_stats_img(
-                z_map, alpha=alpha, height_control='fpr'
-            )
+        # == THRESHOLD MAP ==
+        thresholded_map, threshold = threshold_stats_img(
+            z_map, alpha=alpha, height_control='fpr'
+        )
 
-            # == PLOT MAPS (THRESHOLDED AND UNTHRESHOLDED) ==
-            plot_stat_map(thresholded_map, threshold, cname, idx, outdir, template, title=f'{cname} - Encounter #{idx+1} (FPR-corrected p < {alpha})')
-            plot_stat_map(z_map, liberal_threshold, cname, idx, outdir, template, title=f'{cname} - Encounter #{idx+1} (z > {liberal_threshold:.2f})')
+        # == PLOT MAPS (THRESHOLDED AND UNTHRESHOLDED) ==
+        plot_stat_map(thresholded_map, threshold, cname, outdir, template, 
+                     title=f'{cname} (FPR-corrected p < {alpha})')
+        plot_stat_map(z_map, liberal_threshold, cname, outdir, template, 
+                     title=f'{cname} (z > {liberal_threshold:.2f})')
+        plot_stat_map(z_map, no_threshold, cname, outdir, template, 
+                     title=f'{cname} (z > {no_threshold:.2f})')
 
     return
 

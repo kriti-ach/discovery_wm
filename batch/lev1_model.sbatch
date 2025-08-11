@@ -10,7 +10,7 @@
 # Outputs ----------------------------------
 #SBATCH -o ./log/%x-%A-%a.out
 #SBATCH -e ./log/%x-%A-%a.err
-#SBATCH --mail-user=logben@stanford.edu
+#SBATCH --mail-user=kritiach@stanford.edu
 #SBATCH --mail-type=END
 # ------------------------------------------
 
@@ -44,10 +44,17 @@ first_level_script="src/discovery_wm/glm/first_level.py"
 subject=$( sed "${SLURM_ARRAY_TASK_ID}q;d" ${ALL_SUBJECTS_FILE} )
 echo "Subject: $subject"
 
-# Run the first-level model script
-echo "Running first-level model for task: $TASK_NAME"
-cmd="uv run $first_level_script --subj-id $subject --task-name $TASK_NAME"
-echo "Running command: $cmd"
-$cmd
+# Check if the subject has the task data
+task_dir="/oak/stanford/groups/russpold/data/network_grant/validation_BIDS/derivatives/glm_data/sub-${subject}/ses-*/func/*task-${TASK_NAME}_*"
+if ! ls $task_dir 1> /dev/null 2>&1; then
+    echo "No data found for subject ${subject} and task ${TASK_NAME}. Skipping."
+    exit 0
+else
+    # Run the first-level model script
+    echo "Running first-level model for task: $TASK_NAME"
+    cmd="uv run $first_level_script --subj-id $subject --task-name $TASK_NAME"
+    echo "Running command: $cmd"
+    $cmd
+fi
 
 exit $? 

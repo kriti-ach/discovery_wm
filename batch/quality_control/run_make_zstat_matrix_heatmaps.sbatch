@@ -9,7 +9,7 @@
 #SBATCH --mem=16G
 
 # Run using uv and specify the venv directory directly
-DATA_DIR=./output_lev1_mni
+DATA_DIR=./output_lev1_mni_no_ted_comp
 CURRENT_DIR=$PWD
 OUTDIR=$PWD/quality_control/vif_figures
 uv --directory $CURRENT_DIR run python $CURRENT_DIR/src/discovery_wm/quality_control/make_zstat_matrix_heatmaps.py \

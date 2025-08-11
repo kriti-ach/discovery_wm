@@ -69,31 +69,67 @@ def load_vif_data(vif_file: Path, target_contrast: str) -> float:
 def get_task_baseline_contrasts(task_name: str) -> str:
     """Get task-baseline contrast provided the task name"""
     contrasts = {
-        'cuedTS': (
-            '1/3*(task_stay_cue_switch+task_stay_cue_stay+task_switch_cue_switch)'
+        "cuedTS": (
+            "1/3*(task_stay_cue_switch+task_stay_cue_stay+task_switch_cue_switch)"
         ),
-        'spatialTS': (
-            '1/3*(task_stay_cue_switch+task_stay_cue_stay+task_switch_cue_switch)'
+        "spatialTS": (
+            "1/3*(task_stay_cue_switch+task_stay_cue_stay+task_switch_cue_switch)"
         ),
-        'directedForgetting': '1/4*(con+pos+neg+memory_and_cue)',
-        'flanker': '1/2*congruent + 1/2*incongruent',
-        'goNogo': '1/2*go+1/2*nogo_success',
-        'nBack': '1/4*(mismatch_1back+match_1back+mismatch_2back+match_2back)',
-        'stopSignal': '1/3*go + 1/3*stop_failure + 1/3*stop_success',
-        'shapeMatching': '1/7*(SSS+SDD+SNN+DSD+DDD+DDS+DNN)',
-        'directedForgettingWFlanker': (
-            '1/7*(congruent_pos+congruent_neg+congruent_con+incongruent_pos+'
-            'incongruent_neg+incongruent_con+memory_and_cue)'
+        "directedForgetting": "1/4*(con+pos+neg+memory_and_cue)",
+        "flanker": "1/2*congruent + 1/2*incongruent",
+        "goNogo": "1/2*go+1/2*nogo_success",
+        "nBack": "1/4*(mismatch_1back+match_1back+mismatch_2back+match_2back)",
+        "stopSignal": "1/3*go + 1/3*stop_failure + 1/3*stop_success",
+        "shapeMatching": "1/7*(SSS+SDD+SNN+DSD+DDD+DDS+DNN)",
+        "directedForgettingWCuedTS": (
+            "1/7*(congruent_pos+congruent_neg+congruent_con+incongruent_pos+incongruent_neg+incongruent_con+memory_and_cue)"
+        ), 
+        "directedForgettingWFlanker": (
+            "1/7*(congruent_pos+congruent_neg+congruent_con+incongruent_pos+"
+            "incongruent_neg+incongruent_con+memory_and_cue)"
         ),
-        'stopSignalWDirectedForgetting': (
-            '1/10*(go_pos+go_neg+go_con+stop_success_pos+stop_success_neg+'
-            'stop_success_con+stop_failure_pos+stop_failure_neg+stop_failure_con+'
-            'memory_and_cue)'
+        "stopSignalWDirectedForgetting": (
+            "1/10*(go_pos+go_neg+go_con+stop_success_pos+stop_success_neg+"
+            "stop_success_con+stop_failure_pos+stop_failure_neg+stop_failure_con+"
+            "memory_and_cue)"
         ),
-        'stopSignalWFlanker': (
-            '1/6*(go_congruent+go_incongruent+stop_success_congruent+'
-            'stop_success_incongruent+stop_failure_congruent+stop_failure_incongruent)'
+        "stopSignalWFlanker": (
+            "1/6*(go_congruent+go_incongruent+stop_success_congruent+"
+            "stop_success_incongruent+stop_failure_congruent+stop_failure_incongruent)"
         ),
+        "spatialTSWCuedTS": (
+            "1/9*"
+            "(cuedtstaycstay_spatialtstaycstay+cuedtstaycstay_spatialtstaycswitch+cuedtstaycstay_spatialtswitchcswitch"
+            "+cuedtstaycswitch_spatialtstaycstay+cuedtstaycswitch_spatialtstaycswitch+cuedtstaycswitch_spatialtswitchcswitch+"
+            "cuedtswitchcswitch_spatialtstaycstay+cuedtswitchcswitch_spatialtstaycswitch+cuedtswitchcswitch_spatialtswitchcswitch)"
+        ),
+        "flankerWShapeMatching": (
+            "1/14*(congruent_SSS+congruent_SDD+congruent_SNN+congruent_DSD+congruent_DNN+"
+            "congruent_DDD+congruent_DDS+incongruent_SSS+incongruent_SDD+incongruent_SNN+"
+            "incongruent_DSD+incongruent_DNN+incongruent_DDD+incongruent_DDS)"
+        ),
+        "cuedTSWFlanker": (
+            "1/6*(cstay_tstay_congruent+cstay_tstay_incongruent+cswitch_tswitch_congruent+"
+            "cswitch_tswitch_incongruent+cswitch_tstay_congruent+cswitch_tstay_incongruent)"
+        ),
+        "spatialTSWShapeMatching": (
+            "1/21*(tstay_cstay_SSS+tstay_cstay_SDD+tstay_cstay_SNN+tstay_cstay_DSD+tstay_cstay_DNN+tstay_cstay_DDD+tstay_cstay_DDS+"
+            "tstay_cswitch_SSS+tstay_cswitch_SDD+tstay_cswitch_SNN+tstay_cswitch_DSD+tstay_cswitch_DNN+tstay_cswitch_DDD+tstay_cswitch_DDS+"
+            "tswitch_cswitch_SSS+tswitch_cswitch_SDD+tswitch_cswitch_SNN+tswitch_cswitch_DSD+tswitch_cswitch_DNN+"
+            "tswitch_cswitch_DDD+tswitch_cswitch_DDS)"
+        ),
+        "nBackWShapeMatching": (
+            "1/12*(mismatch_tstay_cstay_1back+mismatch_tstay_cswitch_1back+"
+            "mismatch_tswitch_cswitch_1back+match_tstay_cstay_1back+match_tstay_cswitch_1back+"
+            "match_tswitch_cswitch_1back+mismatch_tstay_cstay_2back+mismatch_tstay_cswitch_2back+"
+            "mismatch_tswitch_cswitch_2back+match_tstay_cstay_2back+match_tstay_cswitch_2back+match_tswitch_cswitch_2back)"
+        ),
+        "nBackWSpatialTS": (
+            "1/12*(mismatch_tstay_cstay_1back+mismatch_tstay_cswitch_1back+mismatch_tswitch_cswitch_1back+"
+            "match_tstay_cstay_1back+match_tstay_cswitch_1back+match_tswitch_cswitch_1back+mismatch_tstay_cstay_2back+"
+            "mismatch_tstay_cswitch_2back+mismatch_tswitch_cswitch_2back+match_tstay_cstay_2back+match_tstay_cswitch_2back+"
+            "match_tswitch_cswitch_2back)"
+        )
     }
     return contrasts[task_name]
 
@@ -102,9 +138,311 @@ def get_target_contrast(contrast: str, task_name: str) -> str:
     """Get short name of contrast provided the full contrast name"""
     contrasts = {
         'task-baseline': get_task_baseline_contrasts(task_name),
-        'main_vars': '1/3*(SDD+DDD+DDS)-1/2*(SNN+DNN)',
-        'cue_switch_cost': 'task_stay_cue_switch-task_stay_cue_stay',
-        'task_switch_cost': 'task_switch_cue_switch-task_stay_cue_switch',
+        'main_vars': "1/3*(SDD+DDD+DDS)-1/2*(SNN+DNN)",
+        'cue_switch_cost': "task_stay_cue_switch-task_stay_cue_stay",
+        'task_switch_cost': "task_switch_cue_switch-task_stay_cue_switch",
+        'match-mismatch': "1/2*(match_2back+match_1back-mismatch_2back-mismatch_1back)",
+        'twoBack-oneBack': "1/2*(mismatch_2back+match_2back-mismatch_1back-match_1back)",
+
+        # directedForgettingWCuedTS
+        "(neg_tstay_cswitch+pos_tstay_cswitch+con_tstay_cswitch)-(neg_tstay_cstay+pos_tstay_cstay+con_tstay_cstay)":
+            "1/3*(neg_tstay_cswitch+pos_tstay_cswitch+con_tstay_cswitch)-1/3*(neg_tstay_cstay+pos_tstay_cstay+con_tstay_cstay)",
+
+        "(neg_tswitch_cswitch+pos_tswitch_cswitch+con_tswitch_cswitch)-(neg_tstay_cswitch+pos_tstay_cswitch+con_tstay_cswitch)":
+            "1/3*(neg_tswitch_cswitch+pos_tswitch_cswitch+con_tswitch_cswitch)-1/3*(neg_tstay_cswitch+pos_tstay_cswitch+con_tstay_cswitch)",
+
+        "(neg_tstay_cstay+neg_tstay_cswitch+neg_tswitch_cswitch)-(con_tstay_cstay+con_tstay_cswitch+con_tswitch_cswitch)":
+            "1/3*(neg_tstay_cstay+neg_tstay_cswitch+neg_tswitch_cswitch)-1/3*(con_tstay_cstay+con_tstay_cswitch+con_tswitch_cswitch)",
+
+        "(neg_tstay_cswitch-con_tstay_cswitch)-(neg_tstay_cstay-con_tstay_cstay)":
+            "1/2*(neg_tstay_cswitch-con_tstay_cswitch)-1/2*(neg_tstay_cstay-con_tstay_cstay)",
+
+        "(neg_tswitch_cswitch-con_tswitch_cswitch)-(neg_tstay_cswitch-con_tstay_cswitch)":
+            "1/2*(neg_tswitch_cswitch-con_tswitch_cswitch)-1/2*(neg_tstay_cswitch-con_tstay_cswitch)",
+        
+        # directedForgettingWFlanker
+        "(incongruent_neg-incongruent_con)-(congruent_neg-congruent_con)":
+            "1/2*(incongruent_neg+congruent_con)-1/2*(incongruent_con+congruent_neg)",
+        
+        # stopSignalWDirectedForgetting
+        "(stop_success_con+stop_success_pos+stop_success_neg)-(go_con+go_pos_+go_neg)":
+            "1/3*(stop_success_con+stop_success_pos+stop_success_neg)-1/3*(go_con+go_pos+go_neg)",
+
+        "(stop_failure_con+stop_failure_pos+stop_failure_neg)-(go_con+go_pos_+go_neg)":
+            "1/3*(stop_failure_con+stop_failure_pos+stop_failure_neg)-1/3*(go_con+go_pos+go_neg)",
+
+        "(stop_success_neg-go_neg)-(stop_success_con-go_con)":
+            "1/2*(stop_success_neg-go_neg)-1/2*(stop_success_con-go_con)",
+
+        "(stop_failure_neg-go_neg)-(stop_failure_con-go_con)":
+            "1/2*(stop_failure_neg-go_neg)-1/2*(stop_failure_con-go_con)",
+
+        # stopSignalWFlanker
+        "(stop_success_congruent+stop_success_incongruent)-(go_congruent+go_incongruent)": (
+            "1/2*(stop_success_congruent+stop_success_incongruent)-1/2*(go_congruent+go_incongruent)"
+            ),
+
+        "(stop_failure_congruent+stop_failure_incongruent)-(go_congruent+go_incongruent)": (
+            "1/2*(stop_failure_congruent+stop_failure_incongruent)-1/2*(go_congruent+go_incongruent)"
+            ),
+
+        "(stop_success_incongruent-go_incongruent)-(stop_success_congruent-go_congruent)": (
+            "1/2*(stop_success_incongruent-go_incongruent)-1/2*(stop_success_congruent-go_congruent)"
+            ),
+
+        "(stop_failure_incongruent-go_incongruent)-(stop_failure_congruent-go_congruent)": (
+            "1/2*(stop_failure_incongruent-go_incongruent)-1/2*(stop_failure_congruent-go_congruent)"
+            ),
+        
+        # spatialTSWCuedTS
+        "(cuedtstaycswitch_spatialtstaycstay+cuedtstaycswitch_spatialtstaycswitch+cuedtstaycswitch_spatialtswitchcswitch)-"
+        "(cuedtstaycstay_spatialtstaycstay+cuedtstaycstay_spatialtstaycswitch+cuedtstaycstay_spatialtswitchcswitch)": (
+            "1/3*(cuedtstaycswitch_spatialtstaycstay+cuedtstaycswitch_spatialtstaycswitch+cuedtstaycswitch_spatialtswitchcswitch)"
+            "-1/3*(cuedtstaycstay_spatialtstaycstay+cuedtstaycstay_spatialtstaycswitch+cuedtstaycstay_spatialtswitchcswitch)"
+            ),
+
+        "(cuedtswitchcswitch_spatialtstaycstay+cuedtswitchcswitch_spatialtstaycswitch+cuedtswitchcswitch_spatialtswitchcswitch)-"
+        "(cuedtstaycswitch_spatialtstaycstay+cuedtstaycswitch_spatialtstaycswitch+cuedtstaycswitch_spatialtswitchcswitch)": (
+            "1/3*(cuedtswitchcswitch_spatialtstaycstay+cuedtswitchcswitch_spatialtstaycswitch+cuedtswitchcswitch_spatialtswitchcswitch)-"
+            "1/3*(cuedtstaycswitch_spatialtstaycstay+cuedtstaycswitch_spatialtstaycswitch+cuedtstaycswitch_spatialtswitchcswitch)"
+            ),
+
+        "(cuedtstaycstay_spatialtstaycswitch+cuedtstaycswitch_spatialtstaycswitch+cuedtswitchcswitch_spatialtstaycswitch)-"
+        "(cuedtstaycstay_spatialtstaycstay+cuedtstaycswitch_spatialtstaycstay+cuedtswitchcswitch_spatialtstaycstay)": (
+            "1/3*(cuedtstaycstay_spatialtstaycswitch+cuedtstaycswitch_spatialtstaycswitch+cuedtswitchcswitch_spatialtstaycswitch)-"
+            "1/3*(cuedtstaycstay_spatialtstaycstay+cuedtstaycswitch_spatialtstaycstay+cuedtswitchcswitch_spatialtstaycstay)"
+            ),
+
+        "(cuedtstaycstay_spatialtswitchcswitch+cuedtstaycswitch_spatialtswitchcswitch+cuedtswitchcswitch_spatialtswitchcswitch)-"
+        "(cuedtstaycstay_spatialtstaycswitch+cuedtstaycswitch_spatialtstaycswitch+cuedtswitchcswitch_spatialtstaycswitch)": (
+            "1/3*(cuedtstaycstay_spatialtswitchcswitch+cuedtstaycswitch_spatialtswitchcswitch+cuedtswitchcswitch_spatialtswitchcswitch)-"
+            "1/3*(cuedtstaycstay_spatialtstaycswitch+cuedtstaycswitch_spatialtstaycswitch+cuedtswitchcswitch_spatialtstaycswitch)"
+            ),
+
+        "(cuedtstaycswitch_spatialtstaycswitch-cuedtstaycstay_spatialtstaycswitch)-"
+        "(cuedtstaycswitch_spatialtstaycstay-cuedtstaycstay_spatialtstaycstay)": (
+            "1/2*(cuedtstaycswitch_spatialtstaycswitch-cuedtstaycstay_spatialtstaycswitch)"
+            "-1/2*(cuedtstaycswitch_spatialtstaycstay-cuedtstaycstay_spatialtstaycstay)"
+            ),
+
+        "(cuedtswitchcswitch_spatialtswitchcswitch-cuedtstaycswitch_spatialtswitchcswitch)-"
+        "(cuedtswitchcswitch_spatialtstaycswitch-cuedtstaycswitch_spatialtstaycswitch)":(
+            "1/2*(cuedtswitchcswitch_spatialtswitchcswitch-cuedtstaycswitch_spatialtswitchcswitch)-"
+            "1/2*(cuedtswitchcswitch_spatialtstaycswitch-cuedtstaycswitch_spatialtstaycswitch)"
+            ),
+        
+        # flankerWShapeMatching
+        "(incongruent_SNN+incongruent_DNN)-(congruent_SNN+congruent_DNN)": (
+            "1/2*(incongruent_SNN+incongruent_DNN)-1/2*(congruent_SNN+congruent_DNN)"
+            ),
+
+        "(congruent_SDD+congruent_DDD+congruent_DDS)-(congruent_SNN+congruent_DNN)": (
+            "1/3*(congruent_SDD+congruent_DDD+congruent_DDS)-1/2*(congruent_SNN+congruent_DNN)"
+            ),
+
+        "(incongruent_SSS+incongruent_SDD+incongruent_SNN+incongruent_DSD+incongruent_DNN+incongruent_DDD+incongruent_DDS)-"
+        "(congruent_SSS+congruent_SDD+congruent_SNN+congruent_DSD+congruent_DNN+congruent_DDD+congruent_DDS)": (
+            "1/7*(incongruent_SSS+incongruent_SDD+incongruent_SNN+incongruent_DSD+incongruent_DNN+incongruent_DDD+incongruent_DDS)"
+            "-1/7*(congruent_SSS+congruent_SDD+congruent_SNN+congruent_DSD+congruent_DNN+congruent_DDD+congruent_DDS)"
+            ),
+
+        "(congruent_SDD+congruent_DDD+congruent_DDS+incongruent_SDD+incongruent_DDD+incongruent_DDS)-"
+        "(congruent_SNN+congruent_DNN+incongruent_SNN+incongruent_DNN)": (
+            "1/6*(congruent_SDD+congruent_DDD+congruent_DDS+incongruent_SDD+incongruent_DDD+incongruent_DDS)-"
+            "1/4*(congruent_SNN+congruent_DNN+incongruent_SNN+incongruent_DNN)"
+            ),
+
+        "((incongruent_SDD+incongruent_DDD+incongruent_DDS)-(congruent_SDD+congruent_DDD+congruent_DDS))-"
+        "((incongruent_SNN+incongruent_DNN)-(congruent_SNN+congruent_DNN))": (
+            "(1/3*(incongruent_SDD+incongruent_DDD+incongruent_DDS)-1/3*(congruent_SDD+congruent_DDD+congruent_DDS))-"
+            "(1/2*(incongruent_SNN+incongruent_DNN)-1/2*(congruent_SNN+congruent_DNN))"
+            ),
+        
+        # cuedTSWFlanker
+        "(cstay_tstay_incongruent+cswitch_tswitch_incongruent+cswitch_tstay_incongruent)-"
+        "(cstay_tstay_congruent+cswitch_tswitch_congruent+cswitch_tstay_congruent)": (
+            "1/3*(cstay_tstay_incongruent+cswitch_tswitch_incongruent+cswitch_tstay_incongruent)-"
+            "1/3*(cstay_tstay_congruent+cswitch_tswitch_congruent+cswitch_tstay_congruent)"
+            ),
+
+        "(cswitch_tstay_congruent+cswitch_tstay_incongruent)-(cstay_tstay_congruent+cstay_tstay_incongruent)": (
+            "1/2*(cswitch_tstay_congruent+cswitch_tstay_incongruent)-1/2*(cstay_tstay_congruent+cstay_tstay_incongruent)"
+            ),
+
+        "(cswitch_tswitch_congruent+cswitch_tswitch_incongruent)-(cswitch_tstay_congruent+cswitch_tstay_incongruent)": (
+            "1/2*(cswitch_tswitch_congruent+cswitch_tswitch_incongruent)-1/2*(cswitch_tstay_congruent+cswitch_tstay_incongruent)"
+            ),
+
+        "(cswitch_tstay_incongruent-cstay_tstay_incongruent)-(cswitch_tstay_congruent-cstay_tstay_congruent)": (
+            "1/2*(cswitch_tstay_incongruent-cstay_tstay_incongruent)-1/2*(cswitch_tstay_congruent-cstay_tstay_congruent)"
+            ),
+
+        "(cswitch_tswitch_incongruent-cswitch_tstay_incongruent)-(cswitch_tswitch_congruent-cswitch_tstay_congruent)": (
+            "1/2*(cswitch_tswitch_incongruent-cswitch_tstay_incongruent)-1/2*(cswitch_tswitch_congruent-cswitch_tstay_congruent)"
+            ),
+
+        # spatialTSWShapeMatching
+        "(tstay_cswitch_SNN+tstay_cswitch_DNN)-(tstay_cstay_SNN+tstay_cstay_DNN)": (
+            "1/2*(tstay_cswitch_SNN+tstay_cswitch_DNN)-1/2*(tstay_cstay_SNN+tstay_cstay_DNN)"
+            ),
+
+        "(tswitch_cswitch_SNN+tswitch_cswitch_DNN)-(tstay_cswitch_SNN+tstay_cswitch_DNN)": (
+            "1/2*(tswitch_cswitch_SNN+tswitch_cswitch_DNN)-1/2*(tstay_cswitch_SNN+tstay_cswitch_DNN)"
+            ),
+
+        "(tstay_cstay_SDD+tstay_cstay_DDD+tstay_cstay_DDS)-(tstay_cstay_SNN+tstay_cstay_DNN)": (
+            "1/3*(tstay_cstay_SDD+tstay_cstay_DDD+tstay_cstay_DDS)-1/2*(tstay_cstay_SNN+tstay_cstay_DNN)"
+            ),
+
+        "(tstay_cswitch_SSS+tstay_cswitch_SDD+tstay_cswitch_SNN+tstay_cswitch_DSD+tstay_cswitch_DNN+tstay_cswitch_DDD+tstay_cswitch_DDS)-"
+        "(tstay_cstay_SSS+tstay_cstay_SDD+tstay_cstay_SNN+tstay_cstay_DSD+tstay_cstay_DNN+tstay_cstay_DDD+tstay_cstay_DDS)": (
+            "1/7*(tstay_cswitch_SSS+tstay_cswitch_SDD+tstay_cswitch_SNN+tstay_cswitch_DSD+tstay_cswitch_DNN+tstay_cswitch_DDD+tstay_cswitch_DDS)-"
+            "1/7*(tstay_cstay_SSS+tstay_cstay_SDD+tstay_cstay_SNN+tstay_cstay_DSD+tstay_cstay_DNN+tstay_cstay_DDD+tstay_cstay_DDS)"
+            ),
+
+        "(tswitch_cswitch_SSS+tswitch_cswitch_SDD+tswitch_cswitch_SNN+"
+        "tswitch_cswitch_DSD+tswitch_cswitch_DNN+tswitch_cswitch_DDD+tswitch_cswitch_DDS)-"
+        "(tstay_cswitch_SSS+tstay_cswitch_SDD+tstay_cswitch_SNN+tstay_cswitch_DSD+"
+        "tstay_cswitch_DNN+tstay_cswitch_DDD+tstay_cswitch_DDS)": (
+            "1/7*(tswitch_cswitch_SSS+tswitch_cswitch_SDD+tswitch_cswitch_SNN+tswitch_cswitch_DSD+"
+            "tswitch_cswitch_DNN+tswitch_cswitch_DDD+tswitch_cswitch_DDS)-"
+            "1/7*(tstay_cswitch_SSS+tstay_cswitch_SDD+tstay_cswitch_SNN+tstay_cswitch_DSD+"
+            "tstay_cswitch_DNN+tstay_cswitch_DDD+tstay_cswitch_DDS)"
+            ),
+
+        "(tstay_cstay_SDD+tstay_cstay_DDD+tstay_cstay_DDS+tstay_cswitch_SDD+tstay_cswitch_DDD+"
+        "tstay_cswitch_DDS+tswitch_cswitch_SDD+tswitch_cswitch_DDD+tswitch_cswitch_DDS)-"
+        "(tstay_cstay_SNN+tstay_cstay_DNN+tstay_cswitch_SNN+tstay_cswitch_DNN+tswitch_cswitch_SNN+tswitch_cswitch_DNN)": (
+            "1/9*(tstay_cstay_SDD+tstay_cstay_DDD+tstay_cstay_DDS+tstay_cswitch_SDD+"
+            "tstay_cswitch_DDD+tstay_cswitch_DDS+tswitch_cswitch_SDD+tswitch_cswitch_DDD+tswitch_cswitch_DDS)-"
+            "1/6*(tstay_cstay_SNN+tstay_cstay_DNN+tstay_cswitch_SNN+tstay_cswitch_DNN+tswitch_cswitch_SNN+tswitch_cswitch_DNN)"
+            ),
+
+        "((tstay_cswitch_SDD+tstay_cswitch_DDD+tstay_cswitch_DDS)-(tstay_cstay_SDD+tstay_cstay_DDD+tstay_cstay_DDS))-"
+        "((tstay_cswitch_SNN+tstay_cswitch_DNN)-(tstay_cstay_SNN+tstay_cstay_DNN))": (
+            "1/3*(tstay_cswitch_SDD+tstay_cswitch_DDD+tstay_cswitch_DDS)-"
+            "1/3*(tstay_cstay_SDD+tstay_cstay_DDD+tstay_cstay_DDS)-"
+            "1/2*(tstay_cswitch_SNN+tstay_cswitch_DNN)"
+            "+1/2*(tstay_cstay_SNN+tstay_cstay_DNN)"
+            ),
+
+        "((tswitch_cswitch_SDD+tswitch_cswitch_DDD+tswitch_cswitch_DDS)-"
+        "(tstay_cswitch_SDD+tstay_cswitch_DDD+tstay_cswitch_DDS))-"
+        "((tswitch_cswitch_SNN+tswitch_cswitch_DNN)-"
+        "(tstay_cswitch_SNN+tstay_cswitch_DNN))": (
+            "1/3*(tswitch_cswitch_SDD+tswitch_cswitch_DDD+tswitch_cswitch_DDS)-"
+            "1/3*(tstay_cswitch_SDD+tstay_cswitch_DDD+tstay_cswitch_DDS)-"
+            "1/2*(tswitch_cswitch_SNN+tswitch_cswitch_DNN)+"
+            "1/2*(tstay_cswitch_SNN+tstay_cswitch_DNN)"
+            ),
+        
+        # nBackWShapeMatching
+        "(match_tstay_cstay_2back+mismatch_tstay_cstay_2back)-(match_tstay_cstay_1back+mismatch_tstay_cstay_1back)":
+        "1/2*(match_tstay_cstay_2back+mismatch_tstay_cstay_2back)-1/2*(match_tstay_cstay_1back+mismatch_tstay_cstay_1back)",
+
+        "(match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back)-(match_tstay_cstay_1back+mismatch_tstay_cstay_1back)":
+        "1/2*(match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back)-1/2*(match_tstay_cstay_1back+mismatch_tstay_cstay_1back)",
+
+        "(match_tswitch_cswitch_1back+mismatch_tswitch_cswitch_1back)-(match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back)":
+        "1/2*(match_tswitch_cswitch_1back+mismatch_tswitch_cswitch_1back)-1/2*(match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back)",
+
+        "(match_tstay_cstay_2back+match_tstay_cswitch_2back+match_tswitch_cswitch_2back+"
+        "mismatch_tstay_cstay_2back+mismatch_tstay_cswitch_2back+mismatch_tswitch_cswitch_2back)-"
+        "(match_tstay_cstay_1back+match_tstay_cswitch_1back+match_tswitch_cswitch_1back+"
+        "mismatch_tstay_cstay_1back+mismatch_tstay_cswitch_1back+mismatch_tswitch_cswitch_1back)": (
+            "1/6*(match_tstay_cstay_2back+match_tstay_cswitch_2back+match_tswitch_cswitch_2back+"
+            "mismatch_tstay_cstay_2back+mismatch_tstay_cswitch_2back+mismatch_tswitch_cswitch_2back)-"
+            "1/6*(match_tstay_cstay_1back+match_tstay_cswitch_1back+match_tswitch_cswitch_1back+"
+            "mismatch_tstay_cstay_1back+mismatch_tstay_cswitch_1back+mismatch_tswitch_cswitch_1back)"
+            ),
+
+        "(match_tstay_cswitch_1back+match_tstay_cswitch_2back+mismatch_tstay_cswitch_1back+mismatch_tstay_cswitch_2back)-"
+        "(match_tstay_cstay_1back+match_tstay_cstay_2back+mismatch_tstay_cstay_1back+mismatch_tstay_cstay_2back)": (
+            "1/4*(match_tstay_cswitch_1back+match_tstay_cswitch_2back+mismatch_tstay_cswitch_1back+mismatch_tstay_cswitch_2back)-"
+            "1/4*(match_tstay_cstay_1back+match_tstay_cstay_2back+mismatch_tstay_cstay_1back+mismatch_tstay_cstay_2back)"
+            ),
+
+        "(match_tswitch_cswitch_1back+match_tswitch_cswitch_2back+mismatch_tswitch_cswitch_1back+mismatch_tswitch_cswitch_2back)-"
+        "(match_tstay_cswitch_1back+match_tstay_cswitch_2back+mismatch_tstay_cswitch_1back+mismatch_tstay_cswitch_2back)": (
+            "1/4*(match_tswitch_cswitch_1back+match_tswitch_cswitch_2back+mismatch_tswitch_cswitch_1back+mismatch_tswitch_cswitch_2back)-"
+            "1/4*(match_tstay_cswitch_1back+match_tstay_cswitch_2back+mismatch_tstay_cswitch_1back+mismatch_tstay_cswitch_2back)"
+            ),
+
+        "((match_tstay_cswitch_2back+mismatch_tstay_cswitch_2back)-"
+        "(match_tstay_cstay_2back+mismatch_tstay_cstay_2back))-"
+        "((match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back)-"
+        "(match_tstay_cstay_1back+mismatch_tstay_cstay_1back))": (
+            "(1/2*(match_tstay_cswitch_2back+mismatch_tstay_cswitch_2back)-"
+            "1/2*(match_tstay_cstay_2back+mismatch_tstay_cstay_2back))-"
+            "(1/2*(match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back)-"
+            "1/2*(match_tstay_cstay_1back+mismatch_tstay_cstay_1back))"
+            ),
+
+        "((match_tswitch_cswitch_2back+mismatch_tswitch_cswitch_2back)-"
+        "(match_tstay_cswitch_2back+mismatch_tstay_cswitch_2back))-"
+        "((match_tswitch_cswitch_1back+mismatch_tswitch_cswitch_1back)-"
+        "(match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back))": (
+            "(1/2*(match_tswitch_cswitch_2back+mismatch_tswitch_cswitch_2back)-"
+            "1/2*(match_tstay_cswitch_2back+mismatch_tstay_cswitch_2back))-"
+            "(1/2*(match_tswitch_cswitch_1back+mismatch_tswitch_cswitch_1back)-"
+            "1/2*(match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back))"
+            ),
+        
+        # nBackWSpatialTS
+        "(match_tstay_cstay_2back+mismatch_tstay_cstay_2back)-(match_tstay_cstay_1back+mismatch_tstay_cstay_1back)": (
+            "1/2*(match_tstay_cstay_2back+mismatch_tstay_cstay_2back)-1/2*(match_tstay_cstay_1back+mismatch_tstay_cstay_1back)"
+            ),
+
+        "(match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back)-(match_tstay_cstay_1back+mismatch_tstay_cstay_1back)": (
+            "1/2*(match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back)-1/2*(match_tstay_cstay_1back+mismatch_tstay_cstay_1back)"
+            ),
+
+        "(match_tswitch_cswitch_1back+mismatch_tswitch_cswitch_1back)-(match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back)": (
+            "1/2*(match_tswitch_cswitch_1back+mismatch_tswitch_cswitch_1back)-1/2*(match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back)"
+            ),
+
+        "(match_tstay_cstay_2back+match_tstay_cswitch_2back+match_tswitch_cswitch_2back+mismatch_tstay_cstay_2back+"
+        "mismatch_tstay_cswitch_2back+mismatch_tswitch_cswitch_2back)-"
+        "(match_tstay_cstay_1back+match_tstay_cswitch_1back+match_tswitch_cswitch_1back+mismatch_tstay_cstay_1back+"
+        "mismatch_tstay_cswitch_1back+mismatch_tswitch_cswitch_1back)": (
+            "1/6*(match_tstay_cstay_2back+match_tstay_cswitch_2back+match_tswitch_cswitch_2back+"
+            "mismatch_tstay_cstay_2back+mismatch_tstay_cswitch_2back+mismatch_tswitch_cswitch_2back)-"
+            "1/6*(match_tstay_cstay_1back+match_tstay_cswitch_1back+match_tswitch_cswitch_1back+"
+            "mismatch_tstay_cstay_1back+mismatch_tstay_cswitch_1back+mismatch_tswitch_cswitch_1back)"
+            ),
+
+        "(match_tstay_cswitch_1back+match_tstay_cswitch_2back+mismatch_tstay_cswitch_1back+"
+        "mismatch_tstay_cswitch_2back)-(match_tstay_cstay_1back+match_tstay_cstay_2back+"
+        "mismatch_tstay_cstay_1back+mismatch_tstay_cstay_2back)": (
+            "1/4*(match_tstay_cswitch_1back+match_tstay_cswitch_2back+mismatch_tstay_cswitch_1back+mismatch_tstay_cswitch_2back)-"
+            "1/4*(match_tstay_cstay_1back+match_tstay_cstay_2back+mismatch_tstay_cstay_1back+mismatch_tstay_cstay_2back)"
+            ),
+
+        "(match_tswitch_cswitch_1back+match_tswitch_cswitch_2back+mismatch_tswitch_cswitch_1back+mismatch_tswitch_cswitch_2back)-"
+        "(match_tstay_cswitch_1back+match_tstay_cswitch_2back+mismatch_tstay_cswitch_1back+mismatch_tstay_cswitch_2back)": (
+            "1/4*(match_tswitch_cswitch_1back+match_tswitch_cswitch_2back+mismatch_tswitch_cswitch_1back+mismatch_tswitch_cswitch_2back)-"
+            "1/4*(match_tstay_cswitch_1back+match_tstay_cswitch_2back+mismatch_tstay_cswitch_1back+mismatch_tstay_cswitch_2back)"
+            ),
+
+        "((match_tstay_cswitch_2back+mismatch_tstay_cswitch_2back)-"
+        "(match_tstay_cstay_2back+mismatch_tstay_cstay_2back))-"
+        "((match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back)-"
+        "(match_tstay_cstay_1back+mismatch_tstay_cstay_1back))": (
+            "(1/2*(match_tstay_cswitch_2back+mismatch_tstay_cswitch_2back)-"
+            "1/2*(match_tstay_cstay_2back+mismatch_tstay_cstay_2back))-"
+            "(1/2*(match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back)-"
+            "1/2*(match_tstay_cstay_1back+mismatch_tstay_cstay_1back))"
+            ),
+
+        "((match_tswitch_cswitch_2back+mismatch_tswitch_cswitch_2back)-"
+        "(match_tstay_cswitch_2back+mismatch_tstay_cswitch_2back))-"
+        "((match_tswitch_cswitch_1back+mismatch_tswitch_cswitch_1back)-"
+        "(match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back))": (
+            "(1/2*(match_tswitch_cswitch_2back+mismatch_tswitch_cswitch_2back)-"
+            "1/2*(match_tstay_cswitch_2back+mismatch_tstay_cswitch_2back))-"
+            "(1/2*(match_tswitch_cswitch_1back+mismatch_tswitch_cswitch_1back)-"
+            "1/2*(match_tstay_cswitch_1back+mismatch_tstay_cswitch_1back))"
+            ), 
     }
     return contrasts.get(contrast, contrast)
 
@@ -235,7 +573,8 @@ def all_tasks_fetch_all_contrasts_zstats_vifs(
     within each task, the zstat files and VIFs are fetched for all subjects/sessions.
     """
     subj_ids = get_subids_from_directory(data_root)
-    task_names = get_task_names_from_directory(data_root)
+    # Only use the tasks you want
+    task_names = ['stopSignalWDirectedForgetting', 'stopSignalWFlanker', 'directedForgettingWFlanker']
 
     records = []
 
@@ -247,13 +586,17 @@ def all_tasks_fetch_all_contrasts_zstats_vifs(
                 print(f'Skipping {task_name}, {subj_id} due to error: {e}')
                 continue
 
+            # If output is empty, skip
+            if not output or not output.get('contrast_names'):
+                continue
+
             # Round the VIFs
             vifs_rounded = [np.round(val, 2) for val in output['vifs']]
 
             # Create records for each contrast
             for contrast_name, vif, zstat_file, session in zip(
                 output['contrast_names'],
-                vifs_rounded,  # Use the rounded VIFs list
+                vifs_rounded,
                 output['zstat_files'],
                 output['session_names'],
             ):
@@ -269,13 +612,14 @@ def all_tasks_fetch_all_contrasts_zstats_vifs(
                 )
     df = pd.DataFrame(records)
 
-    # Add additional columns
-    df['task_contrast'] = df.apply(
-        lambda row: f'{row["task"]}: {row["contrast_names"]}', axis=1
-    )
-    df['subid_ses_vif'] = df.apply(
-        lambda row: f'{row["subid"]}_ses_{row["session"]}: vif={row["vifs"]}', axis=1
-    )
+    # Only add columns if df is not empty
+    if not df.empty:
+        df['task_contrast'] = df.apply(
+            lambda row: f'{row["task"]}: {row["contrast_names"]}', axis=1
+        )
+        df['subid_ses_vif'] = df.apply(
+            lambda row: f'{row["subid"]}_ses_{row["session"]}: vif={row["vifs"]}', axis=1
+        )
 
     return df
 
