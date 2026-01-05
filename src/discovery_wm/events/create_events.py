@@ -209,7 +209,7 @@ def main():
     logging.basicConfig(level=logging.INFO)
     logging.info("Creating events files")
 
-    _, _, _, _, _, glm_data_dir, behavioral_dir = get_path_config()
+    bids_dir, _, _, _, _, _, behavioral_dir = get_path_config()
 
     # Only process nBackWSpatialTS task
     target_task = 'nBackWSpatialTS'
@@ -218,7 +218,8 @@ def main():
     output_base_dir = Path('/scratch/users/kritiach/discovery_wm/updated_event_files') / target_task
     output_base_dir.mkdir(parents=True, exist_ok=True)
 
-    all_subjects = get_all_subj_paths(glm_data_dir)
+    all_subjects = get_all_subj_paths(bids_dir)
+    print(f"All subjects: {all_subjects}")
     
     for subj in all_subjects:
         sessions = get_subj_sessions(subj)
