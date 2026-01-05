@@ -199,7 +199,7 @@ def create_events_df(filename, short_name):
     #     df[col] = df[col].replace('nan', 'n/a')
     
     # Fixing "na" to "n/a" for spatialTS 
-    if 'spatial_task_switching' in exp_id:
+    if 'spatial_task_switching' in exp_id and 'n_back' not in exp_id:
         df.loc[(df['trial_id'] == 'test_trial') & (df['trial_type'] == 'na'), 'trial_type'] = 'tn/a_cn/a'
         df.loc[(df['trial_id'] == 'test_trial') & (df['trial_type'] == 'tn/a_cn/a'), 'task_switch'] = 'tn/a_cn/a'
 
