@@ -203,6 +203,11 @@ def create_events_df(filename, short_name):
         df.loc[(df['trial_id'] == 'test_trial') & (df['trial_type'] == 'na'), 'trial_type'] = 'tn/a_cn/a'
         df.loc[(df['trial_id'] == 'test_trial') & (df['trial_type'] == 'tn/a_cn/a'), 'task_switch'] = 'tn/a_cn/a'
 
+    # Lowercase trial_type and n_back_condition for nBackWSpatialTS
+    if 'n_back_with_spatial_task_switching' in exp_id:
+        df['trial_type'] = df['trial_type'].apply(lambda x: x.lower() if isinstance(x, str) else x)
+        df['n_back_condition'] = df['n_back_condition'].apply(lambda x: x.lower() if isinstance(x, str) else x)
+
     return df
 
 def main():
