@@ -1,9 +1,9 @@
 {
-    "bids_dir": "/oak/stanford/groups/russpold/data/network_grant/discovery_BIDS_20250402",
-    "fmriprep_dir": "/oak/stanford/groups/russpold/data/network_grant/discovery_BIDS_20250402/derivatives/fmriprep_latest_20250402",
-    "tedana_dummy_removed_dir": "/oak/stanford/groups/russpold/data/network_grant/discovery_BIDS_20250402/derivatives/tedana_dummy_removed",
-    "tedana_denoised_dir": "/oak/stanford/groups/russpold/data/network_grant/discovery_BIDS_20250402/derivatives/tedana_denoised",
-    "tedana_transformed_dir": "/oak/stanford/groups/russpold/data/network_grant/discovery_BIDS_20250402/derivatives/tedana_transformed",
-    "glm_data_dir": "/oak/stanford/groups/russpold/data/network_grant/discovery_BIDS_20250402/derivatives/glm_data",
+    "bids_dir": "/oak/stanford/groups/russpold/data/network_grant/validation_BIDS",
+    "fmriprep_dir": "/oak/stanford/groups/russpold/data/network_grant/validation_BIDS/derivatives/fmriprep_latest",
+    "tedana_dummy_removed_dir": "/oak/stanford/groups/russpold/data/network_grant/validation_BIDS/derivatives/tedana_dummy_removed",
+    "tedana_denoised_dir": "/oak/stanford/groups/russpold/data/network_grant/validation_BIDS/derivatives/tedana_denoised",
+    "tedana_transformed_dir": "/oak/stanford/groups/russpold/data/network_grant/validation_BIDS/derivatives/tedana_transformed",
+    "glm_data_dir": "/oak/stanford/groups/russpold/data/network_grant/validation_BIDS/derivatives/glm_data",
     "behavioral_dir": "/oak/stanford/groups/russpold/data/network_grant/behavioral_data/network_fmri_raw_final_2/"
 }
