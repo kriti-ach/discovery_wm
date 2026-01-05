@@ -203,11 +203,6 @@ def create_events_df(filename, short_name):
         df.loc[(df['trial_id'] == 'test_trial') & (df['trial_type'] == 'na'), 'trial_type'] = 'tn/a_cn/a'
         df.loc[(df['trial_id'] == 'test_trial') & (df['trial_type'] == 'tn/a_cn/a'), 'task_switch'] = 'tn/a_cn/a'
 
-    # Get rows with trial_id of 'break'
-    feedback_block_rows, indices_to_change = get_rows_with_feedback(df, original_df, filename)
-    for index in indices_to_change:
-        df.loc[index, 'trial_id'] = 'break_with_performance_feedback'
-    
     return df
 
 def main():
@@ -215,6 +210,13 @@ def main():
     logging.info("Creating events files")
 
     _, _, _, _, _, glm_data_dir, behavioral_dir = get_path_config()
+
+    # Only process nBackWSpatialTS task
+    target_task = 'nBackWSpatialTS'
+    
+    # Create output directory
+    output_base_dir = Path('/scratch/users/kritiach/discovery_wm/updated_event_files') / target_task
+    output_base_dir.mkdir(parents=True, exist_ok=True)
 
     all_subjects = get_all_subj_paths(glm_data_dir)
     
@@ -226,12 +228,13 @@ def main():
                 func_dir = ses / "func"
                 if not func_dir.exists():
                     raise ValueError(f"No func directory found for {subj} {ses}")
-                # Delete all events.tsv files in this func_dir
-                for f in func_dir.glob("*events.tsv"):
-                    print(f"Deleting old events file: {f}")
-                    f.unlink()
+                
                 func_files = list(func_dir.glob("*.nii.gz"))
                 tasks = get_unique_tasks(func_files)
+
+                # Skip if target task is not in this session
+                if target_task not in tasks:
+                    continue
 
                 # behavioral directory from which to create events files
                 target_dir = find_matching_behavioral_dir(subj.name, ses.name, behavioral_dir)
@@ -245,7 +248,7 @@ def main():
                 for t in csv_files:
                     long_name = get_task_from_filename(t.name)
                     short_name = long_name_to_short_name(long_name)
-                    if short_name not in tasks:
+                    if short_name != target_task:
                         continue
                     task_to_files.setdefault(short_name, []).append(t)
 
@@ -258,7 +261,7 @@ def main():
                     for run_idx, t in enumerate(files_sorted, 1):
                         outname = f"{subj.name}_{ses.name}_task-{short_name}_run-{run_idx}_events.tsv"
                         df = create_events_df(t, short_name)
-                        outpath = ses / "func" / outname
+                        outpath = output_base_dir / outname
                         print(f"Writing {outpath}")
                         df.to_csv(outpath, sep="\t", index=False)
 

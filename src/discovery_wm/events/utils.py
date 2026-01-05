@@ -68,7 +68,7 @@ def get_cols_list(exp_id):
                 'shape_matching_with_spatial_task_switching__fmri': common + ['shape_matching_condition', 'task_switch', 'probe', 'target', 'distractor', 'whichQuadrant'],
                 'shape_matching_with_cued_task_switching__fmri': common + ['cue', 'task_condition', 'cue_condition', 'shape_matching_condition', 'probe', 'target', 'distractor'],
                 'shape_matching_with_cued_task_switching': common + ['cue', 'task_condition', 'cue_condition', 'shape_matching_condition', 'probe', 'target', 'distractor'],
-                'n_back_with_spatial_task_switching__fmri': common + ['n_back_condition', 'task', 'probe', 'whichQuadrant']}
+                'n_back_with_spatial_task_switching__fmri': common + ['n_back_condition', 'delay', 'probe', 'whichQuadrant']}
     to_add = lookup.get(exp_id)
     return to_add
 
